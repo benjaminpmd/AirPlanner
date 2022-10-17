@@ -1,5 +1,5 @@
 <?php
-$page_title = "AC Solutions";
+$page_title = "Politique de confidentialité";
 $page_date = "17 Octobre 2022";
 
 include "./include/header.inc.php";

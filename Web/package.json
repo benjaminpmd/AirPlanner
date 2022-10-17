@@ -1,14 +1,15 @@
 {
-  "name": "aeroclub-solution",
+  "name": "ac-solutions",
   "version": "1.0.0",
-  "description": "Aeroclub-Solution est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils.",
+  "description": "AC Solutions est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx tailwindcss -i ./src/css/input.css -o ./src/css/global.css --watch",
+    "build": "if exist .\\dist\\ rmdir /s /Y .\\dist\\ && mkdir dist & npx tailwindcss -i ./src/css/input.css -o ./src/css/global.css && xcopy /s /Y src\\*.* dist\\ && del .\\dist\\css\\input.css"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benjaminpmd/Aeroclub-Solution.git"
+    "url": "git+https://github.com/benjaminpmd/Aeroclub-Solutions.git"
   },
   "keywords": [
     "aeroclub"
@@ -16,9 +17,9 @@
   "author": "MA Xuming, FLEUTRY Eva, PAUMARD Benjamin",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/benjaminpmd/Aeroclub-Solution/issues"
+    "url": "https://github.com/benjaminpmd/Aeroclub-Solutions/issues"
   },
-  "homepage": "https://github.com/benjaminpmd/Aeroclub-Solution#readme",
+  "homepage": "https://github.com/benjaminpmd/Aeroclub-Solutions#readme",
   "dependencies": {
     "autoprefixer": "^10.4.12",
     "npm": "^8.19.2",
