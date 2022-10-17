@@ -1,0 +1,7 @@
+# FOLDERS
+build
+node_modules
+
+
+# FILES
+.env
