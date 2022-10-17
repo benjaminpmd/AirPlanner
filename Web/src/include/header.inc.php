@@ -28,17 +28,12 @@ if (!isset($page_date) || empty($page_date)) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta name="author" content="Xuming M. &amp; Eva F. &amp; Benjamin P." />
+  <meta name="title" content="<?php echo $page_title; ?>" />
+  <meta name="name" content="<?php echo $page_title; ?>" />
   <meta name="description" content="<?php echo $page_description; ?>" />
   <meta name="date" content="<?php echo $page_date ?>" />
   <meta name="location" content="CY Cergy Paris Université" />
   <link rel="canonical" href="<?php echo WEBSITE_URL; ?>" />
-
-
-  <!-- Google / Search Engine Tags -->
-  <meta itemprop="name" content="<?php echo $page_title; ?>" />
-  <meta itemprop="description" content="<?php echo $page_description; ?>" />
-  <meta itemprop="date" content="<?php echo $page_date; ?>" />
-  <meta itemprop="location" content="CY Cergy Paris Université" />
 
   <!-- Facebook Meta Tags -->
   <meta property="og:locale" content="fr_FR" />
@@ -71,61 +66,42 @@ if (!isset($page_date) || empty($page_date)) {
             <p class="self-center flex ml-2 text-2xl font-extrabold">AC Solutions</p>
           </a>
           <div class="flex items-center md:hidden">
-            <button
-              class="rounded-full text-sm p-4 inline-flex items-center transition duration-300"
-              data-aw-toggle-color-scheme
-            >
-              <svg 
-                xmlns="http://www.w3.org/2000/svg" 
-                height="24"
-                width="24"
-                class="fill-black dark:fill-white"
-              >
-                <path d="M12 22q-.825 0-1.412-.587Q10 20.825 10 20h4q0 .825-.587 1.413Q12.825 22 12 22Zm-4-3v-2h8v2Zm.25-3q-1.725-1.025-2.737-2.75Q4.5 11.525 4.5 9.5q0-3.125 2.188-5.312Q8.875 2 12 2q3.125 0 5.312 2.188Q19.5 6.375 19.5 9.5q0 2.025-1.012 3.75-1.013 1.725-2.738 2.75Zm.6-2h6.3q1.125-.8 1.738-1.975.612-1.175.612-2.525 0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525Q7.725 13.2 8.85 14ZM12 14Z"/>
+            <button class="rounded-full text-sm p-4 inline-flex items-center transition duration-300" data-aw-toggle-color-scheme>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="fill-black dark:fill-white">
+                <path d="M12 22q-.825 0-1.412-.587Q10 20.825 10 20h4q0 .825-.587 1.413Q12.825 22 12 22Zm-4-3v-2h8v2Zm.25-3q-1.725-1.025-2.737-2.75Q4.5 11.525 4.5 9.5q0-3.125 2.188-5.312Q8.875 2 12 2q3.125 0 5.312 2.188Q19.5 6.375 19.5 9.5q0 2.025-1.012 3.75-1.013 1.725-2.738 2.75Zm.6-2h6.3q1.125-.8 1.738-1.975.612-1.175.612-2.525 0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525Q7.725 13.2 8.85 14ZM12 14Z" />
               </svg>
             </button>
-            <button 
-              class="ml-1.5 rounded-full text-sm p-4 inline-flex items-center transition"
-              data-aw-toggle-menu
-            >
-              <svg xmlns="http://www.w3.org/2000/svg"
-                height="24" 
-                width="24"
-                class="fill-black dark:fill-white"
-              >
-                <path d="M3 18v-2h18v2Zm0-5v-2h18v2Zm0-5V6h18v2Z"/>
-                </svg>
-              </button>
+            <button class="ml-1.5 rounded-full text-sm p-4 inline-flex items-center transition" data-aw-toggle-menu>
+              <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="fill-black dark:fill-white">
+                <path d="M3 18v-2h18v2Zm0-5v-2h18v2Zm0-5V6h18v2Z" />
+              </svg>
+            </button>
           </div>
         </div>
         <nav class="items-center w-full md:w-auto hidden md:flex h-screen md:h-auto" id="menu">
           <ul class="flex flex-col pt-1 md:pt-0 md:flex-row md:self-center collapse w-full md:w-auto collapsed text-xl md:text-base">
-            <?php 
-              foreach(get_routes() as $route) {
-                if ($route["header"]) {
-                  echo "\t\t\t\t\t\t<li>";
-                  echo "\t\t\t\t\t\t\t<a class=\"block p-4 md:text-center md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out\" href=\"".$route["ref"]."\">";
-                  echo "\t\t\t\t\t\t\t".$route["title"]."</a></li>";
-                }
+            <?php
+            foreach (get_routes() as $route) {
+              if ($route["header"]) {
+                echo "\t\t\t\t\t\t<li>";
+                echo "\t\t\t\t\t\t\t<a class=\"block p-4 md:text-center md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out\" href=\"" . $route["ref"] . "\">";
+                echo "\t\t\t\t\t\t\t" . $route["title"] . "</a></li>";
               }
+            }
             ?>
 
           </ul>
           <div class="md:self-center flex items-center mb-4 md:mb-0 collapse collapsed">
             <div class="hidden items-center mr-3 md:flex">
-              <button 
-                class="text-gray-500 dark:text-gray-400 text-sm p-4 inline-flex items-center" aria-label="Toggle between Dark and Light mode" data-aw-toggle-color-scheme>
-                <svg xmlns="http://www.w3.org/2000/svg"
-                  height="24"
-                  width="24"
-                  class="fill-black dark:fill-white"
-                >
-                  <path d="M12 22q-.825 0-1.412-.587Q10 20.825 10 20h4q0 .825-.587 1.413Q12.825 22 12 22Zm-4-3v-2h8v2Zm.25-3q-1.725-1.025-2.737-2.75Q4.5 11.525 4.5 9.5q0-3.125 2.188-5.312Q8.875 2 12 2q3.125 0 5.312 2.188Q19.5 6.375 19.5 9.5q0 2.025-1.012 3.75-1.013 1.725-2.738 2.75Zm.6-2h6.3q1.125-.8 1.738-1.975.612-1.175.612-2.525 0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525Q7.725 13.2 8.85 14ZM12 14Z"/>
+              <button class="text-gray-500 dark:text-gray-400 text-sm p-4 inline-flex items-center" aria-label="Toggle between Dark and Light mode" data-aw-toggle-color-scheme>
+                <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="fill-black dark:fill-white">
+                  <path d="M12 22q-.825 0-1.412-.587Q10 20.825 10 20h4q0 .825-.587 1.413Q12.825 22 12 22Zm-4-3v-2h8v2Zm.25-3q-1.725-1.025-2.737-2.75Q4.5 11.525 4.5 9.5q0-3.125 2.188-5.312Q8.875 2 12 2q3.125 0 5.312 2.188Q19.5 6.375 19.5 9.5q0 2.025-1.012 3.75-1.013 1.725-2.738 2.75Zm.6-2h6.3q1.125-.8 1.738-1.975.612-1.175.612-2.525 0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525Q7.725 13.2 8.85 14ZM12 14Z" />
                 </svg>
               </button>
             </div>
           </div>
         </nav>
       </div>
-      <h1 class="p-10 my-10 text-5xl text-center font-bold dark:text-white"><?php echo $page_title; ?></h1>
+    </div>
+    <h1 class="p-10 my-10 text-5xl text-center font-bold"><?php echo $page_title; ?></h1>
   </header>
