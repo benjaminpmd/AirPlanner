@@ -2,7 +2,9 @@
 build
 dist
 node_modules
+__pycache__
 
 
 # FILES
 .env
+log.txt

@@ -602,10 +602,6 @@ video {
   overflow: hidden;
 }
 
-.whitespace-nowrap {
-  white-space: nowrap;
-}
-
 .rounded-full {
   border-radius: 9999px;
 }
@@ -693,6 +689,11 @@ video {
 .text-gray-500 {
   --tw-text-opacity: 1;
   color: rgb(107 114 128 / var(--tw-text-opacity));
+}
+
+.antialiased {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .backdrop-blur {
