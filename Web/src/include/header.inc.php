@@ -57,7 +57,7 @@ if (!isset($page_date) || empty($page_date)) {
   <link href="./css/global.css" rel="stylesheet" />
 </head>
 
-<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white whitespace-nowrap">
+<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased">
   <header>
     <div class="top-0 z-40 flex-none mx-auto w-full transition duration-300">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">
