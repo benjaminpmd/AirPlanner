@@ -2,6 +2,10 @@
 # initial declarations
 declare(strict_types=1);
 include_once "./include/utils.inc.php";
+include_once "./include/functions.inc.php";
+
+// checking if credentials are valid
+$valid_credentials = check_credentials();
 
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
