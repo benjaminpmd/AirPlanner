@@ -8,3 +8,4 @@ __pycache__
 # FILES
 .env
 log.txt
+docs/.$schema_ea.drawio.bkp

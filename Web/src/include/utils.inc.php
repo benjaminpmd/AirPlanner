@@ -26,32 +26,65 @@ function get_routes(): array
         [
             "title" => "Accueil",
             "ref"   => "/",
-            "header" => true
-        ],
-        [
-            "title" => "A propos",
-            "ref"   => "/about.php",
-            "header" => true
+            "header" => true,
+            "logged" => true,
+            "not_logged" => true,
         ],
         [
             "title" => "Connexion",
             "ref"   => "/connection.php",
-            "header" => true
+            "header" => true,
+            "logged" => false,
+            "not_logged" => true,
         ],
         [
             "title" => "S'enregistrer",
             "ref"   => "/register.php",
-            "header" => true
+            "header" => true,
+            "logged" => false,
+            "not_logged" => true,
+        ],
+        [
+            "title" => "Réservation",
+            "ref"   => "/booking.php",
+            "header" => true,
+            "logged" => true,
+            "not_logged" => false,
+        ],
+        [
+            "title" => "Mon compte",
+            "ref"   => "/account.php",
+            "header" => true,
+            "logged" => true,
+            "not_logged" => false,
+        ],
+        [
+            "title" => "Se déconnecter",
+            "ref"   => "/index.php?disconnect=true",
+            "header" => true,
+            "logged" => true,
+            "not_logged" => false,
         ],
         [
             "title" => "Conditions d'utilisation",
             "ref"   => "/terms-of-service.php",
-            "header" => false
+            "header" => false,
+            "logged" => false,
+            "not_logged" => false,
         ],
         [
             "title" => "Politique de confidentialité",
             "ref"   => "/privacy-policy.php",
-            "header" => false
+            "header" => false,
+            "logged" => false,
+            "not_logged" => false,
+        ],
+        [
+            "title" => "A propos",
+            "ref"   => "/about.php",
+            "header" => false,
+            "logged" => true,
+            "not_logged" => true,
         ],
     ];
 }
@@ -62,41 +95,57 @@ function get_routes(): array
  * 
  * @param string $user_id the ID of an user.
  * @param string $user_password the password of a user.
- * @return boolean if the credentials are correct or not.
+ * @return boolean if credentials are correct or not. 
  */
-function valid_credentials(string $user_id, string $user_password): array|bool {
-    // creating the query first
-    $query = "SELECT user_id FROM users WHERE (user_id=" . $user_id . ") AND (password='" . $user_password . "');";
+function valid_credentials(string $user_id, string $user_password): bool {
+    // creating the query
+    $query = "SELECT password FROM users WHERE (user_id=" . $user_id . ");";
     // connecting to the database
     $connection = pg_connect(CONNECTION_STRING);
     // getting the results of the query
     $result = pg_query($connection, $query);
+    $result_array = pg_fetch_array($result);
+    if ($result_array) {
+        if (password_verify($user_password, $result_array[0])) {
+            // close the connection
+            pg_close($connection);
+            // return if the credentials are correct or not
+            return true;
+        }
+    }
     // close the connection
     pg_close($connection);
     // return if the credentials are correct or not
-    return pg_fetch_array($result);
+    return false;
 }
 
 /**
- * Function to check if a user is logged in or not. If the user is logged, an array containing all of its informations is returned.
+ * Function to check if session details are correct or not. If the user is logged, an array containing all of its informations is returned.
  * 
  * @param string $uid the token of the session.
  * @param int the supposed ID of the user.
- * @return array|bool an array of informations about the user if he is logged, false if the session is expired or does not exist
+ * @return boolean if the session exist.
  */
-function get_user(string $uid, string $user_id): array|bool {
-    $remove_old_session_query = "DELETE FROM site_sessions WHERE (user_id=" . $user_id . ") AND (uid='" . $uid . "');";
+function valid_session(string $uid, string $user_id): bool {
+    $remove_old_session_query = "DELETE FROM site_sessions WHERE (expiration_time < NOW());";
     // creating the query first
-    $query = "SELECT * FROM site_sessions WHERE (user_id=" . $user_id . ") AND (uid='" . $uid . "');";
+    $query = "SELECT user_id FROM site_sessions WHERE (user_id=" . $user_id . ") AND (uid='" . $uid . "');";
     // connecting to the database
     $connection = pg_connect(CONNECTION_STRING);
-    // getting the results of the query
+    // removing the old sessions
     pg_query($connection, $remove_old_session_query);
+    // checking if a session exist
     $result = pg_query($connection, $query);
+    // if the result is not null close the connection and return true
+    $result_array = pg_fetch_array($result);
+    if ($result_array) {
+        pg_close($connection);
+        return true;
+    }
     // close the connection
     pg_close($connection);
     // return if the credentials are correct or not
-    return $result;
+    return false;
 }
 
 function create_session(string $user_id): string {
@@ -111,3 +160,14 @@ function create_session(string $user_id): string {
     // return if the credentials are correct or not
     return $uid;
 }
+
+function delete_session(string $uid, string $user_id) {
+    $query = "DELETE FROM site_sessions WHERE (uid='".$uid."') AND (user_id=".$user_id.");";
+    // connecting to the database
+    $connection = pg_connect(CONNECTION_STRING);
+    // getting the results of the query
+    pg_exec($connection, $query);
+    // close the connection
+    pg_close($connection);
+}
+

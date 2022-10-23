@@ -9,10 +9,10 @@
 
 # importing librairies
 from dotenv import dotenv_values
-import server
+from db import Database
 
 # defining values for the server configuration
-ADDRESS = ''
+ADDRESS = '127.0.0.1'
 PORT = 1024
 
 def main() -> None:
@@ -21,12 +21,10 @@ def main() -> None:
     # getting the values stored in the .env file
     config = dotenv_values(".env")
 
-    # creating the server and starting it
-    s: server.Server = server.Server(config, ADDRESS, PORT)
-    s.start()
+    db = Database(config)
 
-    input("Press enter to stop the server...")
-    s.stop()
+    db.test_connection()
+
 
 if __name__ == '__main__':
     main()

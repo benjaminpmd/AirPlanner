@@ -7,6 +7,10 @@ include_once "./include/functions.inc.php";
 // checking if credentials are valid
 $valid_credentials = check_credentials();
 
+$is_logged = is_logged();
+
+$is_logged = disconnect($is_logged);
+
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
   $page_title = "AC Solutions";
@@ -20,6 +24,11 @@ if (!isset($page_description) || empty($page_description)) {
 # checking if the page date exist
 if (!isset($page_date) || empty($page_date)) {
   $page_date = date('d-m-y');
+}
+
+# checking if the page date exist
+if (!isset($page_canonical) || empty($page_canonical)) {
+  $page_date = "/";
 }
 
 ?>
@@ -37,11 +46,11 @@ if (!isset($page_date) || empty($page_date)) {
   <meta name="description" content="<?php echo $page_description; ?>" />
   <meta name="date" content="<?php echo $page_date ?>" />
   <meta name="location" content="CY Cergy Paris Université" />
-  <link rel="canonical" href="<?php echo WEBSITE_URL; ?>" />
+  <link rel="canonical" href="<?php echo WEBSITE_URL . $page_canonical; ?>" />
 
   <!-- Facebook Meta Tags -->
   <meta property="og:locale" content="fr_FR" />
-  <meta property="og:url" content="<?php echo WEBSITE_URL; ?>" />
+  <meta property="og:url" content="<?php echo WEBSITE_URL . $page_canonical; ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AC Solutions" />
   <meta property="og:title" content="<?php echo $page_title; ?>" />
@@ -49,7 +58,7 @@ if (!isset($page_date) || empty($page_date)) {
   <meta property="og:image" content="<?php echo WEBSITE_URL . "/img/favicon.ico"; ?>" />
 
   <!-- Twitter Meta Tags -->
-  <meta name="twitter:url" content="<?php echo WEBSITE_URL; ?>" />
+  <meta name="twitter:url" content="<?php echo WEBSITE_URL . $page_canonical; ?>" />
   <meta name="twitter:card" content="summary_small_image" />
   <meta name="twitter:title" content="<?php echo $page_title; ?>" />
   <meta name="twitter:description" content="<?php echo $page_description; ?>" />
@@ -87,9 +96,11 @@ if (!isset($page_date) || empty($page_date)) {
             <?php
             foreach (get_routes() as $route) {
               if ($route["header"]) {
-                echo "\t\t\t\t\t\t<li>";
-                echo "\t\t\t\t\t\t\t<a class=\"block p-4 md:text-center md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out\" href=\"" . $route["ref"] . "\">";
-                echo "\t\t\t\t\t\t\t" . $route["title"] . "</a></li>";
+                if (($is_logged && $route["logged"]) || (!$is_logged && $route["not_logged"])) {
+                  echo "\t\t\t\t\t\t<li>";
+                  echo "\t\t\t\t\t\t\t<a class=\"block p-4 md:text-center md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out\" href=\"" . $route["ref"] . "\">";
+                  echo "\t\t\t\t\t\t\t" . $route["title"] . "</a></li>";
+                }
               }
             }
             ?>

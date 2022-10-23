@@ -19,14 +19,14 @@ function check_credentials(): bool {
             
             // if not, then the result is an array containing the id of the user
             // creating an unique ID for the session
-            $uid = create_session($res[0]);
+            $uid = create_session($_POST["user-id"]);
 
             // setting cookies with the uid and the user ID
             setcookie("uid", $uid, time()+86400);
-            setcookie("user_id", $res[0], time()+86400);
+            setcookie("user_id", $_POST["user-id"], time()+86400);
             
             // redirecting the user to the dashboard
-            header("Location: /dashboard.php");
+            header("Location: /booking.php");
             
             // exiting
             exit();
@@ -35,7 +35,7 @@ function check_credentials(): bool {
             return true;
         }
         else {
-            
+
             // else the credentials are not correct
             return false;
         }
@@ -43,4 +43,27 @@ function check_credentials(): bool {
     
     // if no then the user is not trying to connect
     return true;
+}
+
+/**
+ * Function that check if a user is logged or not.
+ * 
+ * @return boolean if the user is logged or not.
+ */
+function is_logged(): bool {
+    if ((isset($_COOKIE["uid"]) && !empty($_COOKIE["uid"])) && (isset($_COOKIE["user_id"]) && !empty($_COOKIE["user_id"]))) {
+        return valid_session($_COOKIE["uid"], $_COOKIE["user_id"]);
+    }
+    return false;
+}
+
+
+function disconnect(bool $is_logged) {
+    if (isset($_GET["disconnect"]) && !empty($_GET["disconnect"])) {
+        if (($is_logged) && ($_GET["disconnect"] == "true")) {
+            delete_session($_COOKIE["uid"], $_COOKIE["user_id"]);
+            return false;
+        }
+    }
+    return $is_logged;
 }

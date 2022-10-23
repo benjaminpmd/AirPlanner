@@ -1,7 +1,7 @@
 <?php
-$page_title = "Conditions d'utilisation";
-$page_date = "17 Octobre 2022";
-$page_canonical = "/terms-of-service.php";
+$page_title = "Réservation";
+$page_date = "23 Octobre 2022";
+$page_canonical = "/booking.php";
 
 include "./include/header.inc.php";
 ?>

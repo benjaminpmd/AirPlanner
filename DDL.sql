@@ -30,7 +30,7 @@ CREATE TABLE users (
     user_id SERIAL,
     last_name VARCHAR(30) NOT NULL,
     first_name VARCHAR(30) NOT NULL,
-    password VARCHAR(40) NOT NULL,
+    password VARCHAR(60) NOT NULL,
     CONSTRAINT user_pk PRIMARY KEY (user_id)
 );
 
@@ -75,4 +75,4 @@ CREATE table site_sessions(
 INSERT INTO 
     users(last_name, first_name, password)
 VALUES
-    ('P', 'Benjamin', 'azerty');
+    ('P', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');

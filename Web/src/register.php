@@ -1,6 +1,7 @@
 <?php
 $page_title = "Connexion";
 $page_date = "17 Octobre 2022";
+$page_canonical = "/register.php";
 
 include_once "./include/utils.inc.php";
 
