@@ -11,9 +11,18 @@ $is_logged = is_logged();
 
 $is_logged = disconnect($is_logged);
 
+$password_reset = reset_password();
+
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
   $page_title = "AC Solutions";
+}
+
+if ($page_title != "AC Solutions") {
+  $meta_title = $page_title . " — AC Solutions";
+}
+else {
+  $meta_title = $page_title;
 }
 
 # checking if the page description exist
@@ -41,8 +50,8 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <meta name="author" content="Xuming M. &amp; Eva F. &amp; Benjamin P." />
-  <meta name="title" content="<?php echo $page_title; ?>" />
-  <meta name="name" content="<?php echo $page_title; ?>" />
+  <meta name="title" content="<?php echo $meta_title; ?>" />
+  <meta name="name" content="<?php echo $meta_title; ?>" />
   <meta name="description" content="<?php echo $page_description; ?>" />
   <meta name="date" content="<?php echo $page_date ?>" />
   <meta name="location" content="CY Cergy Paris Université" />
@@ -53,18 +62,18 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <meta property="og:url" content="<?php echo WEBSITE_URL . $page_canonical; ?>" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="AC Solutions" />
-  <meta property="og:title" content="<?php echo $page_title; ?>" />
+  <meta property="og:title" content="<?php echo $meta_title; ?>" />
   <meta property="og:description" content="<?php echo $page_description; ?>" />
   <meta property="og:image" content="<?php echo WEBSITE_URL . "/img/favicon.ico"; ?>" />
 
   <!-- Twitter Meta Tags -->
   <meta name="twitter:url" content="<?php echo WEBSITE_URL . $page_canonical; ?>" />
   <meta name="twitter:card" content="summary_small_image" />
-  <meta name="twitter:title" content="<?php echo $page_title; ?>" />
+  <meta name="twitter:title" content="<?php echo $meta_title; ?>" />
   <meta name="twitter:description" content="<?php echo $page_description; ?>" />
   <meta name="twitter:image" content="<?php echo WEBSITE_URL . "/img/favicon.ico"; ?>" />
 
-  <title><?php echo $page_title; ?></title>
+  <title><?php echo $meta_title; ?></title>
   <script src="./js/index.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display&amp;display=swap" rel="stylesheet" />
   <link href="./css/global.css" rel="stylesheet" />

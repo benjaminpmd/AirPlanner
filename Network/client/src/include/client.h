@@ -22,4 +22,8 @@
 */
 void communication(int sockfd);
 
+// INFO: the procedures declared here are meant to communicate with the server, so we are going to have 2 procedure
+// void lockerCommunication(int sockfd);
+// void hangarCommunication(int sockfd);
+
 #endif

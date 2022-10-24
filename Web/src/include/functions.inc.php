@@ -67,3 +67,15 @@ function disconnect(bool $is_logged) {
     }
     return $is_logged;
 }
+
+function reset_password(): string | bool {
+    if (isset($_POST["user-id-pr"]) && !empty($_POST["user-id-pr"]) && isset($_POST["user-birthday-pr"]) && !empty($_POST["user-birthday-pr"]) && isset($_POST["reset-password"]) && !empty($_POST["reset-password"])) {
+        $new_password = uniqid();
+        $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
+        $connection = pg_connect(CONNECTION_STRING);
+        $query = "UPDATE user JOIN";
+        pg_close($connection);
+        return "Votre nouveau mot de passe est <strong>" . $new_password . "</strong>\n";
+    }
+    return false;
+}

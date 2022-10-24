@@ -1,9 +1,8 @@
 #include "include/client.h"
 
-int main(int argc, char const *argv[])
-{
+int main(int argc, char const *argv[]) {
 	int sockfd, connfd;
-	struct sockaddr_in servaddr, cli;
+	struct sockaddr_in serverAddress, cli;
 
 	// socket create and verification
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -12,15 +11,15 @@ int main(int argc, char const *argv[])
 		exit(0);
 	}
 	else printf("Socket successfully created..\n");
-	bzero(&servaddr, sizeof(servaddr));
+	bzero(&serverAddress, sizeof(serverAddress));
 
 	// assign IP, PORT
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1");
-	servaddr.sin_port = htons(PORT);
+	serverAddress.sin_family = AF_INET;
+	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	serverAddress.sin_port = htons(PORT);
 
 	// connect the client socket to server socket
-	if (connect(sockfd, (SA*)&servaddr, sizeof(servaddr))
+	if (connect(sockfd, (SA*)&serverAddress, sizeof(serverAddress))
 		!= 0) {
 		printf("connection with the server failed...\n");
 		exit(0);
