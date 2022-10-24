@@ -10,10 +10,11 @@
 # importing librairies
 from dotenv import dotenv_values
 from db import Database
+from server import Server
 
 # defining values for the server configuration
-ADDRESS = '127.0.0.1'
-PORT = 1024
+ADDRESS = ''
+PORT = 8080
 
 def main() -> None:
     """Function starting the server."""
@@ -22,9 +23,10 @@ def main() -> None:
     config = dotenv_values(".env")
 
     db = Database(config)
+    server = Server(ADDRESS, PORT)
 
     db.test_connection()
-
+    server.run()
 
 if __name__ == '__main__':
     main()

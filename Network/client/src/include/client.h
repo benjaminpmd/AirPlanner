@@ -1,6 +1,7 @@
 #ifndef client
 #define client
 
+
 #include <arpa/inet.h>
 #include <netdb.h>
 #include <stdio.h>
@@ -11,13 +12,14 @@
 #include <unistd.h>
 
 #define MAX 80
-#define PORT 1024
+#define PORT 8080
 #define SA struct sockaddr
+
 /**
- * This procedure executes the client 
+ * This procedure enable communications with the server
  * 
  * @param sockfd the socket
 */
-void execute(int sockfd);
+void communication(int sockfd);
 
 #endif

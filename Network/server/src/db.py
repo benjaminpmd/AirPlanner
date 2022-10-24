@@ -9,7 +9,7 @@ class Database:
     def test_connection(self) -> None:
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        cursor.execute("SELECT first_name FROM users;")
+        cursor.execute("SELECT * FROM users;")
         print(cursor.fetchall())
         cursor.close()
         connection.close()
