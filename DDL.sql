@@ -28,24 +28,22 @@ DROP TABLE IF EXISTS site_sessions CASCADE;
 -- Create a new table called 'pilots'
 CREATE TABLE users (
     user_id SERIAL,
+    phone CHAR(10) NOT NULL,
+    email VARCHAR(100) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     first_name VARCHAR(30) NOT NULL,
     password VARCHAR(60) NOT NULL,
-    CONSTRAINT user_pk PRIMARY KEY (user_id)
+    CONSTRAINT user_pk PRIMARY KEY (user_id),
+    CONSTRAINT valid_phone CHECK (phone ~ '^[0-9 ]*$')
 );
 
 -- Create a new table called 'pilots'
 CREATE TABLE pilots (
     pilot_id SERIAL REFERENCES users(user_id) NOT NULL,
-    last_name VARCHAR(30) NOT NULL,
-    first_name VARCHAR(30) NOT NULL,
-    phone CHAR(10) NOT NULL,
     birth_date DATE NOT NULL,
     address VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     postal_code CHAR(7),
-    email VARCHAR(100) NOT NULL,
-    password VARCHAR(40) NOT NULL,
     contribution_date DATE,
     medical_check_date DATE,
     ifr_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
@@ -57,7 +55,6 @@ CREATE TABLE pilots (
     rib CHAR(27),
     CONSTRAINT pilot_pk PRIMARY KEY (pilot_id),
     CONSTRAINT valid_birth_date CHECK (birth_date <= CURRENT_DATE),
-    CONSTRAINT valid_phone CHECK (phone ~ '^[0-9 ]*$'),
     CONSTRAINT valid_postal_code CHECK (postal_code ~ '^[0-9 ]*$'),
     CONSTRAINT valid_contribution_date CHECK (contribution_date <= CURRENT_DATE),
     CONSTRAINT valid_medical_check_date CHECK (medical_check_date <= CURRENT_DATE)
@@ -73,6 +70,6 @@ CREATE table site_sessions(
 
 -- DML TEST
 INSERT INTO 
-    users(last_name, first_name, password)
+    users(email, phone, last_name, first_name, password)
 VALUES
-    ('P', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');
+    ('dev.benjaminpaumard@gmail.com', '0102030405', 'Pmd', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');

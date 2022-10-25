@@ -85,20 +85,10 @@ include_once "./include/utils.inc.php";
                 name="user-id-pr"
                 class="p-2 m-2 max-w-[200px] rounded-full border-2 border-gray-500 dark:border-gray-500 hover:border-gray-600 hover:dark:border-gray-400 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 duration-300 outline-none"
             />
-            <label
-                class="p-2 text-xl"
-            >
-                Date de naissance
-            </label>
-            <input 
-                type="date"
-                name="user-birthday-pr"
-                class="p-2 m-2 cursor-pointer max-w-[200px] rounded-full border-2 border-gray-500 dark:border-gray-500 hover:border-gray-600 hover:dark:border-gray-400 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 duration-300 outline-none"
-            />
             <input
                 type="submit"
                 class="cursor-pointer mx-2 mt-4 p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600"
-                value="Remettre à zéro mon mot de passe"
+                value="Obtenir un nouveau mot de passe"
             />
         </form>
         </article>
