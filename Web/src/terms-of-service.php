@@ -5,8 +5,9 @@ $page_canonical = "/terms-of-service.php";
 
 include "./include/header.inc.php";
 ?>
-<main class="min-h-screen">
-</main>
+    <section>
+        <h2 class="text-center text-2xl m-5">Page en cours de construction</h2>
+    </section>
 <?php
 include "./include/footer.inc.php";
 ?>

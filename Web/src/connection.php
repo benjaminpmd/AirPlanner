@@ -7,7 +7,6 @@ include "./include/header.inc.php";
 include_once "./include/utils.inc.php";
 
 ?>
-<main class="min-h-screen text-center">
         <h2 class="text-2xl p-4">Connectez vous</h2>
         <form 
             action="/connection.php"
@@ -102,7 +101,6 @@ include_once "./include/utils.inc.php";
             </a>
         </article>
     </section>
-</main>
 <?php
 include "./include/footer.inc.php";
 ?>

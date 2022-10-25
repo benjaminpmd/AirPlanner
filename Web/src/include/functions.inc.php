@@ -91,10 +91,10 @@ function reset_password(): string | bool {
         if ($user) {
             // mailing the password part
             $to = $user[0];
-            $subject = "Réinitialisation de votre mot de passe - AC Solutions";
-            $message = "Bonjour " . $user[1] . " " . $user[2] .",\nVous avez demandez une réinitialisation de votre mot de passe.\nVotre nouveau mot de passe est : " . $new_password . "\n\nCordialement\nL'équipe AC-Solutions";
-            $headers = 'From: AC-Solutions <noreply@ac-solutions.benjaminp.dev>'       . "\r\n" .
-                        'X-Mailer: PHP/' . phpversion();
+            $subject = "Réinitialisation de votre mot de passe - " . WEBSITE_NAME;
+            $message = "Bonjour " . $user[1] . " " . $user[2] .",\nVous avez demandez une réinitialisation de votre mot de passe.\nVotre nouveau mot de passe est : " . $new_password . "\n\nCordialement\nL'équipe " . WEBSITE_NAME;
+            $headers = "From: " . WEBSITE_NAME . " <noreply@" . WEBSITE_NAME_URL . ".benjaminp.dev>"       . "\r\n" .
+                        "X-Mailer: PHP/" . phpversion();
 
             mail($to, $subject, $message, $headers);
             return "Un mail vous a été envoyé.";

@@ -15,11 +15,11 @@ $password_reset = reset_password();
 
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
-  $page_title = "AC Solutions";
+  $page_title = WEBSITE_NAME;
 }
 
-if ($page_title != "AC Solutions") {
-  $meta_title = $page_title . " — AC Solutions";
+if ($page_title != WEBSITE_NAME) {
+  $meta_title = $page_title . " — " . WEBSITE_NAME;
 }
 else {
   $meta_title = $page_title;
@@ -27,7 +27,7 @@ else {
 
 # checking if the page description exist
 if (!isset($page_description) || empty($page_description)) {
-  $page_description = "AC Solutions est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils.";
+  $page_description = WEBSITE_NAME . " est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils.";
 }
 
 # checking if the page date exist
@@ -37,7 +37,7 @@ if (!isset($page_date) || empty($page_date)) {
 
 # checking if the page date exist
 if (!isset($page_canonical) || empty($page_canonical)) {
-  $page_date = "/";
+  $page_canonical = "/";
 }
 
 ?>
@@ -79,16 +79,17 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <link href="./css/global.css" rel="stylesheet" />
 </head>
 
-<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased">
-  <header>
-    <div class="top-0 z-40 flex-none mx-auto w-full transition duration-300">
+<body 
+  class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image: url('/img/home_bg.jpg');">
+  <header class="bg-gray-50/50 dark:bg-gray-500/50 duration-300 ease-in-out">
+    <div class="top-0 z-40 flex-none mx-auto w-full">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">
         <div class="flex justify-between">
           <a class="flex" href="/">
-            <p class="self-center flex ml-2 text-2xl font-extrabold">AC Solutions</p>
+            <p class="self-center flex ml-2 text-2xl font-extrabold"><?php echo WEBSITE_NAME; ?></p>
           </a>
           <div class="flex items-center md:hidden">
-            <button class="rounded-full text-sm p-4 inline-flex items-center transition duration-300" data-aw-toggle-color-scheme>
+            <button class="rounded-full text-sm p-4 inline-flex items-center" data-aw-toggle-color-scheme>
               <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" class="fill-black dark:fill-white">
                 <path d="M12 22q-.825 0-1.412-.587Q10 20.825 10 20h4q0 .825-.587 1.413Q12.825 22 12 22Zm-4-3v-2h8v2Zm.25-3q-1.725-1.025-2.737-2.75Q4.5 11.525 4.5 9.5q0-3.125 2.188-5.312Q8.875 2 12 2q3.125 0 5.312 2.188Q19.5 6.375 19.5 9.5q0 2.025-1.012 3.75-1.013 1.725-2.738 2.75Zm.6-2h6.3q1.125-.8 1.738-1.975.612-1.175.612-2.525 0-2.3-1.6-3.9T12 4Q9.7 4 8.1 5.6T6.5 9.5q0 1.35.613 2.525Q7.725 13.2 8.85 14ZM12 14Z" />
               </svg>
@@ -127,5 +128,6 @@ if (!isset($page_canonical) || empty($page_canonical)) {
         </nav>
       </div>
     </div>
-    <h1 class="p-10 my-10 text-5xl text-center font-bold"><?php echo $page_title; ?></h1>
+    <h1 class="p-10 pb-20 text-5xl text-center font-bold"><?php echo $page_title; ?></h1>
   </header>
+  <main class="min-h-screen bg-gray-50/50 dark:bg-gray-500/50 duration-300 ease-in-out">

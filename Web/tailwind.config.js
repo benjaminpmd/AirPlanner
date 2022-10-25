@@ -8,7 +8,7 @@ module.exports = {
       fontFamily: {
         sans: ['Red Hat Display', ...defaultTheme.fontFamily.sans],
       }
-    },
+    }
   },
   plugins: [],
   darkMode: "class",

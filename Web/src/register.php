@@ -7,7 +7,6 @@ include_once "./include/utils.inc.php";
 
 include "./include/header.inc.php";
 ?>
-<main class="min-h-screen">
     <section class="text-center">
     <h2 class="text-2xl p-4">Inscription sur le portail du club</h2>
     <form 
@@ -89,7 +88,6 @@ include "./include/header.inc.php";
             />
         </form>
     </section>
-</main>
 <?php
 include "./include/footer.inc.php";
 ?>

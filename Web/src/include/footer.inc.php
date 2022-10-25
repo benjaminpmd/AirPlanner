@@ -1,33 +1,63 @@
 <?php
 include_once './include/utils.inc.php';
 ?>
-<footer class="p-10 flex flex-col content-center items-center text-center bg-gray-400 dark:bg-gray-900">
-  <div
-    class="flex flex-col md:flex-row content-center items-center text-center"
-  >
-    <?php 
-      foreach(get_routes() as $route) {
-        echo "\t\t<a class=\"block p-4 md:text-center md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out\" href=\"".$route["ref"]."\">";
-        echo "\t\t".$route["title"]."</a>";
-      }
-    ?>
+</main>
+<footer class="pb-2 flex flex-col content-center items-center text-center bg-gray-300 dark:bg-gray-900">
+  
+  <div class="w-5/6">
+    <div class="w-full grid grid-cols-1 md:grid-cols-5">
+
+      <div class="text-left col-span-2 flex flex-col h-full my-5 mr-10">
+        <p class="text-5xl"><span class="text-blue-500">Air</span><span class="text-white">Plan</span><span class="text-red-500">ner</span></p>
+        <p class="opacity-70"><?php echo WEBSITE_NAME; ?> simplifie la gestion d'aéroclubs en proposant un système de réservation tout en main.</p>
+        <p class="opacity-70">Ce projet est réalisé dans le cadre du projet des UE Base de données et Réseau de la licence informatique de Cergy Paris Université.</p>
+      </div>
+      
+      <div class="text-left flex flex-col h-full mt-5">
+        <p class="font-bold text-xl opacity-70">Navigation</p>
+        <ul>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL; ?>">Accueil</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/booking.php"; ?>">Réservation</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/account.php"; ?>">Compte</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/about.php"; ?>">A propos</a></li>
+        </ul>
+      </div>
+
+      <div class="text-left flex flex-col h-full mt-5">
+        <p class="font-bold text-xl opacity-70">Connection</p>
+        <ul>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/connection.php"; ?>">Connection</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/register.php"; ?>">Inscription</a></li>
+        </ul>
+        <p class="font-bold text-xl opacity-70 mt-5">Administration</p>
+        <ul>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/mechanic.php"; ?>">Portail Mécanicien</a></li>
+        </ul>
+      </div>
+
+      <div class="text-left flex flex-col h-full mt-5">
+        <p class="font-bold text-xl opacity-70">Réseaux</p>
+        <ul>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://github.com/benjaminpmd/AC-Solutions">Github</a></li>
+        </ul>
+        <p class="font-bold text-xl opacity-80 mt-5">Réalisation</p>
+        <ul>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://benjaminp.dev">Benjamin P</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://github.com/Evafltry">Eva F</a></li>
+          <li>Xuming M</li>
+        </ul>
+      </div>
+
+    </div>
   </div>
-  <a
-    href="https://github.com/benjaminpmd/AC-Solutions"
-    class="m-2 p-2 rounded-full hover:text-blue-lighter transition duration-300"
-    ><svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      class="fill-black dark:fill-white hover:fill-blue-800 dark:hover:fill-blue-300 transition duration-300"
-    >
-      <path
-        d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-      ></path>
-    </svg>
-  </a>
-  <p class="text-gray-700 dark:text-gray-300">Tous droits réservés</p>
+
+  <div class="border-[1px] w-5/6 m-3 border-gray-500 dark:border-gray-500"></div>
+
+  <div class="my-0 text-left flex">
+    <a class="text-gray-700 dark:text-gray-300 mx-5 md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/terms-of-service.php" ?>">Conditions d'utilisation</a>
+    <a class="text-gray-700 dark:text-gray-300 mx-5 md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/privacy-policy.php" ?>">Politique de confidentialité</a>
+    <p class="text-gray-700 dark:text-gray-300 mx-5 ml-10">Tous droits réservés</p>
+  </div>
 </footer>
 </body>
 

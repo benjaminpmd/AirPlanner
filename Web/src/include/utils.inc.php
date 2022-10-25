@@ -8,9 +8,16 @@
  * @since 17/10/2022
  */
 
+// name of the website
+define("WEBSITE_NAME", "AirPlanner");
+
+// name of the website
+define("WEBSITE_NAME_URL", "airplanner");
 
 // URL of the website
-define("WEBSITE_URL", "https://ac-solutions.benjaminp.dev");
+define("WEBSITE_URL", "https://".WEBSITE_NAME_URL.".benjaminp.dev");
+
+
 
 // connection string of the database
 define("CONNECTION_STRING", "host=" . getenv("HOST") . " port=" . getenv("PORT") . " dbname=" . getenv("DBNAME") . " user=" . getenv("USER") . " password=" . getenv("PASSWORD"));
