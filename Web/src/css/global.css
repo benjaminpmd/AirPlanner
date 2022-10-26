@@ -516,8 +516,8 @@ video {
   grid-column: span 2 / span 2;
 }
 
-.m-5 {
-  margin: 1.25rem;
+.m-4 {
+  margin: 1rem;
 }
 
 .m-auto {
@@ -528,16 +528,12 @@ video {
   margin: 0.5rem;
 }
 
-.m-4 {
-  margin: 1rem;
+.m-5 {
+  margin: 1.25rem;
 }
 
 .m-3 {
   margin: 0.75rem;
-}
-
-.m-10 {
-  margin: 2.5rem;
 }
 
 .mx-2 {
@@ -563,11 +559,6 @@ video {
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
-}
-
-.my-10 {
-  margin-top: 2.5rem;
-  margin-bottom: 2.5rem;
 }
 
 .mt-2 {
@@ -608,14 +599,6 @@ video {
 
 .mr-3 {
   margin-right: 0.75rem;
-}
-
-.mt-0 {
-  margin-top: 0px;
-}
-
-.mt-10 {
-  margin-top: 2.5rem;
 }
 
 .block {
@@ -660,10 +643,6 @@ video {
 
 .max-w-xl {
   max-width: 36rem;
-}
-
-.max-w-\[200px\] {
-  max-width: 200px;
 }
 
 .flex-none {
@@ -743,16 +722,16 @@ video {
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
+.bg-gray-50\/50 {
+  background-color: rgb(249 250 251 / 0.5);
+}
+
 .bg-gray-400\/70 {
   background-color: rgb(156 163 175 / 0.7);
 }
 
-.bg-gray-50\/30 {
-  background-color: rgb(249 250 251 / 0.3);
-}
-
-.bg-gray-50\/50 {
-  background-color: rgb(249 250 251 / 0.5);
+.bg-gray-50\/60 {
+  background-color: rgb(249 250 251 / 0.6);
 }
 
 .bg-cover {
@@ -763,16 +742,16 @@ video {
   fill: #000;
 }
 
-.p-4 {
-  padding: 1rem;
-}
-
 .p-5 {
   padding: 1.25rem;
 }
 
 .p-2 {
   padding: 0.5rem;
+}
+
+.p-4 {
+  padding: 1rem;
 }
 
 .p-10 {
@@ -787,16 +766,12 @@ video {
   padding-top: 0.25rem;
 }
 
-.pt-0 {
-  padding-top: 0px;
-}
-
-.pb-10 {
-  padding-bottom: 2.5rem;
-}
-
 .pb-20 {
   padding-bottom: 5rem;
+}
+
+.pt-0 {
+  padding-top: 0px;
 }
 
 .text-left {
@@ -959,16 +934,12 @@ video {
   background-color: rgb(31 41 55 / var(--tw-bg-opacity));
 }
 
-.dark .dark\:bg-gray-500\/30 {
-  background-color: rgb(107 114 128 / 0.3);
-}
-
-.dark .dark\:bg-gray-500\/0 {
-  background-color: rgb(107 114 128 / 0);
-}
-
 .dark .dark\:bg-gray-500\/50 {
   background-color: rgb(107 114 128 / 0.5);
+}
+
+.dark .dark\:bg-gray-500\/60 {
+  background-color: rgb(107 114 128 / 0.6);
 }
 
 .dark .dark\:fill-white {

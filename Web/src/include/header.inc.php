@@ -13,6 +13,8 @@ $is_logged = disconnect($is_logged);
 
 $password_reset = reset_password();
 
+$register_status = register();
+
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
   $page_title = WEBSITE_NAME;
@@ -81,7 +83,7 @@ if (!isset($page_canonical) || empty($page_canonical)) {
 
 <body 
   class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image: url('/img/home_bg.jpg');">
-  <header class="bg-gray-50/50 dark:bg-gray-500/50 duration-300 ease-in-out">
+  <header class="bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out">
     <div class="top-0 z-40 flex-none mx-auto w-full">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">
         <div class="flex justify-between">
@@ -130,4 +132,4 @@ if (!isset($page_canonical) || empty($page_canonical)) {
     </div>
     <h1 class="p-10 pb-20 text-5xl text-center font-bold"><?php echo $page_title; ?></h1>
   </header>
-  <main class="min-h-screen bg-gray-50/50 dark:bg-gray-500/50 duration-300 ease-in-out">
+  <main class="min-h-screen bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out">
