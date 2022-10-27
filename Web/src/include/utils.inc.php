@@ -360,9 +360,9 @@ function register(): string | bool {
         // if the user exist, it means an account is associated with it
         if ($user) {
             // create the query to insert the pilot
-            $new_pilot_query = "INSERT INTO pilots(first_name, last_name, email, phone, password) VALUES ('".$_POST["register-firstname"]."', '".$_POST["register-lastname"]."', '".$_POST["register-email"]."', '".$_POST["register-phone"]."', '".$hashed_password ."');";
+            $new_pilot_query = "INSERT INTO pilots(pilot_id, birth_date, address, city, postal_code) VALUES (".$user[0].", '".$_POST["register-birthday"]."', '".$_POST["register-address"]."', '".$_POST["register-city"]."', ".$_POST["register-postal-code"].");";
 
-            //pg_query($connection, $new_pilot_query);
+            pg_query($connection, $new_pilot_query);
 
             // close the connection
             pg_close($connection);
@@ -370,12 +370,7 @@ function register(): string | bool {
             // mailing the password part
             $to = $user[1];
             $subject = "Bienvenue chez AirPlanner";
-            $message = "Bonjour " . $user[2] . " " . $user[3] .",\n
-            Vous venez de vous inscrire sur la plateforme " . WEBSITE_NAME . ". Merci beaucoup de votre confiance ! \n
-            Voici votre mot de passe : " . $new_password . "\n
-            Vous pouvez le modifier à tout moment en vous connectant sur le site internet.\n\n
-            Cordialement\n
-            L'équipe " . WEBSITE_NAME;
+            $message = "Bonjour " . $user[2] . " " . $user[3] .",\nVous venez de vous inscrire sur la plateforme " . WEBSITE_NAME . ". Merci beaucoup de votre confiance !\nVoici votre mot de passe : " . $new_password . "\nVous pouvez le modifier à tout moment en vous connectant sur le site internet.\n\nCordialement\nL'équipe " . WEBSITE_NAME;
             $headers = "From: " . WEBSITE_NAME . " <noreply@" . WEBSITE_NAME_URL . ".benjaminp.dev>"       . "\r\n" .
                         "X-Mailer: PHP/" . phpversion();
             mail($to, $subject, $message, $headers);
