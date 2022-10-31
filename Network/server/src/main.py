@@ -14,18 +14,18 @@ from server import Server
 
 # defining values for the server configuration
 ADDRESS = ''
-PORT = 8080
+PORT = 1025
 
 def main() -> None:
     """Function starting the server."""
 
     # getting the values stored in the .env file
-    config = dotenv_values(".env")
+    #config = dotenv_values(".env")
 
-    db = Database(config)
+    #db = Database(config)
     server = Server(ADDRESS, PORT)
 
-    db.test_connection()
+    #db.test_connection()
     server.run()
 
 if __name__ == '__main__':

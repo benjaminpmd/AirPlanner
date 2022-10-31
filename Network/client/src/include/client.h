@@ -1,29 +1,25 @@
 #ifndef client
 #define client
 
+#ifdef _WIN32
+#include <Winsock2.h>
+#endif
 
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <strings.h>
 #include <sys/socket.h>
 #include <unistd.h>
+#include <netdb.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <string.h>
+#include <stdbool.h>
 
-#define MAX 80
-#define PORT 8080
-#define SA struct sockaddr
+#define ADDRESS "192.168.0.1"
+#define PORT 1025
 
-/**
- * This procedure enable communications with the server
- * 
- * @param sockfd the socket
-*/
-void communication(int sockfd);
+void lockerCommunication(int sock, void* msg, uint32_t msgsize);
 
-// INFO: the procedures declared here are meant to communicate with the server, so we are going to have 2 procedure
-// void lockerCommunication(int sockfd);
-// void hangarCommunication(int sockfd);
+void hangarCommunication(int sock, void* msg, uint32_t msgsize);
 
 #endif

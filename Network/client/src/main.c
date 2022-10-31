@@ -1,36 +1,21 @@
 #include "include/client.h"
 
 int main(int argc, char const *argv[]) {
-	int sockfd, connfd;
-	struct sockaddr_in serverAddress, cli;
+	char id, server_reply[2000];
 
-	// socket create and verification
-	sockfd = socket(AF_INET, SOCK_STREAM, 0);
-	if (sockfd == -1) {
-		printf("socket creation failed...\n");
-		exit(0);
-	}
-	else printf("Socket successfully created..\n");
-	bzero(&serverAddress, sizeof(serverAddress));
+    int socketClient = socket(AF_INET, SOCK_STREAM, 0);
+    struct sockaddr_in addrClient;
+    addrClient.sin_addr.s_addr = inet_addr("192.168.3.137");
+    addrClient.sin_family = AF_INET;
+    addrClient.sin_port = htons(PORT);
+    connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
+    printf("connection réussi\n");
 
-	// assign IP, PORT
-	serverAddress.sin_family = AF_INET;
-	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
-	serverAddress.sin_port = htons(PORT);
+	char reserv[] = "Y,01";
+    lockerCommunication(socketClient, reserv, sizeof(reserv));
 
-	// connect the client socket to server socket
-	if (connect(sockfd, (SA*)&serverAddress, sizeof(serverAddress))
-		!= 0) {
-		printf("connection with the server failed...\n");
-		exit(0);
-	}
-	else
-		printf("connected to the server..\n");
 
-	// function for chat
-	communication(sockfd);
+    close(socketClient);
 
-	// close the socket
-	close(sockfd);
-
+    return 0;
 }

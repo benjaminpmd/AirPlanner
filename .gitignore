@@ -5,6 +5,7 @@ node_modules
 __pycache__
 .vscode
 vendor
+venv
 
 # FILES
 .env
