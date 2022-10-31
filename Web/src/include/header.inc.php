@@ -3,8 +3,10 @@
 declare(strict_types=1);
 include_once "./include/utils.inc.php";
 include_once "./include/functions.inc.php";
+include_once "./include/auth.inc.php";
 
 // checking if credentials are valid
+
 $valid_credentials = check_credentials();
 
 $is_logged = is_logged();

@@ -4,6 +4,7 @@ dist
 node_modules
 __pycache__
 .vscode
+vendor
 
 # FILES
 .env
