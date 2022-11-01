@@ -11,7 +11,7 @@ int main(int argc, char const *argv[]) {
     connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
     printf("connection réussi\n");
 
-	char reserv[] = "Y,01";
+	char reserv[] = "user&1";
     lockerCommunication(socketClient, reserv, sizeof(reserv));
 
 

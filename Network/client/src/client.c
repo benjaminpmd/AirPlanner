@@ -7,6 +7,8 @@ void lockerCommunication(int sock, void* msg, uint32_t msgsize)
 		close(sock);
 		exit(1);
 	}
+	read(sock, msg, 300);
+	printf("From server : %s\n", msg);
 	printf("Message envoyé, (%d bits envoyés).\n", msgsize);
 	
 }
