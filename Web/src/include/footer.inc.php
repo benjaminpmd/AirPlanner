@@ -38,11 +38,12 @@ include_once './include/utils.inc.php';
       <div class="text-left flex flex-col h-full mt-5">
         <p class="font-bold text-xl opacity-70">Réseaux</p>
         <ul>
-          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://github.com/benjaminpmd/AC-Solutions">Github</a></li>
+          <!--<li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://github.com/benjaminpmd/AC-Solutions">Github</a></li>-->
+          <li>Github (bientôt disponible)</li>
         </ul>
         <p class="font-bold text-xl opacity-80 mt-5">Réalisation</p>
         <ul>
-          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://benjaminp.dev">Benjamin P</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://benjaminpmd.fr">Benjamin P</a></li>
           <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="https://github.com/Evafltry">Eva F</a></li>
           <li>Xuming M</li>
         </ul>

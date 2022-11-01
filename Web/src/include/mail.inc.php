@@ -15,7 +15,6 @@ function send_mail(string $toAddress, string $toName, string $subject, string $c
         $mail->isSMTP();
         $mail->Mailer = "smtp";
         $mail->Host = 'smtp.gmail.com;';
-        $mail->SMTPDebug = 0;
         $mail->SMTPAuth = true;
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
@@ -23,15 +22,16 @@ function send_mail(string $toAddress, string $toName, string $subject, string $c
         $mail->Password = $_ENV["MAIL_PASSWORD"];
 
         $mail->isHTML(true);
+        $mail->CharSet = 'UTF-8'; 
         $mail->addAddress($toAddress, $toName);
         // set from
-        $mail->setFrom('noreply@' . WEBSITE_NAME_URL . '.benjaminp.dev', WEBSITE_NAME);
+        $mail->setFrom('noreply@' . WEBSITE_NAME_URL . '.benjaminpmd.fr', WEBSITE_NAME);
         // set content
         
         $mail->Subject = $subject;
-        $mail->msgHTML($content);
+        $mail->Body = $content;
         $mail->send();
-        var_dump($mail);
+        $mail = null;
         return true;
     } catch (Exception $th) {
         //throw $th;
