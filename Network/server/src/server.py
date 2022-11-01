@@ -2,6 +2,7 @@ import socket
 
 class Server:
     def __init__(self, address: str = '', port: int = 1024) -> None:
+        self.port = port
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server.bind((address, port))
         self.clients: socket = []
@@ -11,7 +12,8 @@ class Server:
         while True:
             client, adresse_client = self.server.accept()
             self.clients.append(client)
-            data = client.recv(80)
+            data = client.recv(self.port)
+            print(data)
             client.send(b"variable echo\n")
     
     def stop(self) -> None:
