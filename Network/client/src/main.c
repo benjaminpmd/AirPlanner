@@ -1,21 +1,21 @@
 #include "include/client.h"
 
 int main(int argc, char const *argv[]) {
-	char id, server_reply[2000];
+	
+    char id, server_reply[2000];
 
+    /**
+     * Structure of the client socket
+     */
+    struct sockaddr_in clientAddress;
     int socketClient = socket(AF_INET, SOCK_STREAM, 0);
-    struct sockaddr_in addrClient;
-    addrClient.sin_addr.s_addr = inet_addr("192.168.3.137");
-    addrClient.sin_family = AF_INET;
-    addrClient.sin_port = htons(PORT);
-    connect(socketClient, (const struct sockaddr *)&addrClient, sizeof(addrClient));
+    clientAddress.sin_addr.s_addr = inet_addr(ADDRESS);
+    clientAddress.sin_family = AF_INET;
+    clientAddress.sin_port = htons(PORT);
+    connect(socketClient, (const struct sockaddr *)&clientAddress, sizeof(clientAddress));
     printf("connection réussi\n");
 
-	char reserv[] = "user&1";
-    lockerCommunication(socketClient, reserv, sizeof(reserv));
+    lockerCommunication(socketClient);
 
-
-    close(socketClient);
-
-    return 0;
+    return EXIT_SUCCESS;
 }
