@@ -15,7 +15,7 @@ define("WEBSITE_NAME", "AirPlanner");
 define("WEBSITE_NAME_URL", "airplanner");
 
 // URL of the website
-define("WEBSITE_URL", "https://".WEBSITE_NAME_URL.".benjaminp.dev");
+define("WEBSITE_URL", "https://".WEBSITE_NAME_URL.".benjaminpmd.fr");
 
 
 

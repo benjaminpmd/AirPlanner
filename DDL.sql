@@ -1,23 +1,17 @@
 /**
- * Creation of the tables used for the procject
+ * Creation of the tables used for the project
  *
- * @author Benjamin PAUMARD
- * @co-author Eva FLEUTRY
- * @co-author Xuming MA
+ * @author Benjamin PAUMARD, Eva FLEUTRY, Xuming MA
  * @version 1.0.0
  * @since 22/10/2022
  */
-
--- removing all data
---DELETE FROM site_sessions;
---DELETE FROM pilots;
 
 -- Dropping
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS pilots CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS instructors CASCADE;
-DROP TABLE IF EXISTS aicrafts CASCADE;
+DROP TABLE IF EXISTS aircrafts CASCADE;
 DROP TABLE IF EXISTS flight_schedules CASCADE;
 DROP TABLE IF EXISTS flight_records CASCADE;
 DROP TABLE IF EXISTS lessons CASCADE;
@@ -25,11 +19,11 @@ DROP TABLE IF EXISTS mechanics CASCADE;
 DROP TABLE IF EXISTS operations CASCADE;
 DROP TABLE IF EXISTS site_sessions CASCADE;
 
--- Create a new table called 'pilots'
-CREATE TABLE users (
+-- Create a new table called 'users'
+CREATE TABLE users(
     user_id SERIAL,
     phone CHAR(10) NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     first_name VARCHAR(30) NOT NULL,
     password VARCHAR(60) NOT NULL,
@@ -60,6 +54,105 @@ CREATE TABLE pilots (
     CONSTRAINT valid_medical_check_date CHECK (medical_check_date <= CURRENT_DATE)
 );
 
+-- Create a new table called 'students'
+CREATE table students(
+    student_id SERIAL REFERENCES pilots(pilot_id) NOT NULL,
+    aircraft_type VARCHAR(10) NOT NULL,
+    CONSTRAINT student_pk PRIMARY KEY (student_id),
+    CONSTRAINT valid_aircraft_type CHECK (LENGTH(aircraft_type) > 2)
+);
+
+-- Create a new table called 'instructors'
+CREATE table instructors(
+    fi_id SERIAL REFERENCES pilots(pilot_id) NOT NULL,
+    fi_code CHAR(3) NOT NULL,
+    CONSTRAINT fi_pk PRIMARY KEY (fi_id)
+);
+
+-- Create a new table called 'aircrafts'
+CREATE table aircrafts(
+    registration CHAR(6) NOT NULL,
+    aircraft_type VARCHAR(10) NOT NULL,
+    max_pax INT NOT NULL,
+    range INT NOT NULL,
+    flight_potential FLOAT NOT NULL,
+    nav_certificate_date DATE NOT NULL,
+    ifr_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
+    night_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
+    air_craft_counter FLOAT NOT NULL DEFAULT(0),
+    has_vpp BOOLEAN DEFAULT(FALSE),
+    has_rg BOOLEAN DEFAULT(FALSE),
+    price FLOAT NOT NULL,
+    CONSTRAINT registration_pk PRIMARY KEY(registration),
+    CONSTRAINT valid_aircraft_type CHECK (LENGTH(aircraft_type) > 2),
+    CONSTRAINT valid_max_pax CHECK (max_pax in(1,2,3)),
+    CONSTRAINT valid_range CHECK ((range >= 400)AND(range <= 1700)),
+    CONSTRAINT valid_price CHECK ((price >= 50)AND(price <= 350))
+);
+
+
+-- Create a new table called 'flight_schedules'
+CREATE table flight_schedules(
+    flight_id INT NOT NULL,
+    pilot_id SERIAL REFERENCES users(user_id) NOT NULL,
+    aircraft_reg CHAR(6) NOT NULL,
+    flight_date date NOT NULL,
+    start_time time NOT NULL,
+    end_time time NOT NULL,
+    flight_description VARCHAR(100),
+    CONSTRAINT flight_pk PRIMARY KEY(flight_id),
+    CONSTRAINT pilot_id_fk FOREIGN KEY (pilot_id) REFERENCES pilots(pilot_id),
+    CONSTRAINT registration_fk FOREIGN KEY (aircraft_reg) REFERENCES aircrafts(registration),
+    CONSTRAINT valid_flight_date CHECK (flight_date >= CURRENT_DATE)
+);
+
+-- Create a new table called 'flight_records'
+CREATE table flight_records(
+    flight_id INT NOT NULL,
+    departure CHAR(4) NOT NULL,
+    departure_counter FLOAT NOT NULL,
+    arrival CHAR(4) NOT NULL,
+    arrival_counter FLOAT,
+    movements INT NOT NULL,
+    flight_time TIME NOT NULL,
+    added_fuel INT NOT NULL,
+    CONSTRAINT valid_counter CHECK (departure_counter < arrival_counter),
+    CONSTRAINT valid_movements CHECK (movements >= 2),
+    CONSTRAINT flight_rec_pk PRIMARY KEY(flight_id)
+);
+
+
+-- Create a new table called 'lessons'
+CREATE table lessons(
+    flight_id INT NOT NULL,
+    fi_id INT NOT NULL,
+    student_id INT NOT NULL,
+    objective VARCHAR(200) NOT NULL,
+    CONSTRAINT flight_id_fk FOREIGN KEY (flight_id) REFERENCES flight_schedules(flight_id),
+    CONSTRAINT fi_id_fk FOREIGN KEY (fi_id) REFERENCES instructors(fi_id),
+    CONSTRAINT student_id_pk FOREIGN KEY (student_id) REFERENCES students(student_id),
+    CONSTRAINT lessons_pk PRIMARY KEY (flight_id, fi_id, student_id)
+);
+
+-- Create a new table called 'mechanics'
+CREATE table mechanics(
+    mechanic_id SERIAL REFERENCES users(user_id) NOT NULL,
+    mechanic_signature INT NOT NULL,
+    CONSTRAINT mechanic_pk PRIMARY KEY (mechanic_id)
+);
+
+-- Create a new table called 'operations'
+CREATE table operations(
+    mechanic_id INT NOT NULL,
+    aircraft_reg CHAR(6) NOT NULL,
+    op_date date,
+    flight_description VARCHAR(100),
+    CONSTRAINT mechanic_id_fk FOREIGN KEY (mechanic_id) REFERENCES mechanics(mechanic_id),
+    CONSTRAINT aircraft_reg_fk FOREIGN KEY (aircraft_reg) REFERENCES aircrafts(registration),
+    CONSTRAINT operations_pk PRIMARY KEY (mechanic_id, aircraft_reg)
+    
+);
+
 -- Create a new table called 'site_sessions'
 CREATE table site_sessions(
     uid CHAR(13) UNIQUE NOT NULL,
@@ -67,9 +160,3 @@ CREATE table site_sessions(
     user_id INTEGER NOT NULL,
     CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
-
--- DML TEST
-INSERT INTO 
-    users(email, phone, last_name, first_name, password)
-VALUES
-    ('dev.benjaminpaumard@gmail.com', '0102030405', 'Pmd', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');
