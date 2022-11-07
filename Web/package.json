@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx tailwindcss -i ./src/css/input.css -o ./src/css/global.css --watch",
-    "build": "if exist .\\dist\\ rmdir /s /Y .\\dist\\ && mkdir dist & npx tailwindcss -i ./src/css/input.css -o ./src/css/global.css && xcopy /s /Y src\\*.* dist\\ && del .\\dist\\css\\input.css"
+    "build": "if exist .\\dist\\ rmdir /s /Y .\\dist\\ && mkdir dist & npx tailwindcss -i ./src/css/input.css -o ./src/css/global.css && xcopy /s /Y src\\*.* dist\\ && del .\\dist\\css\\input.css .\\dist\\composer.*"
   },
   "repository": {
     "type": "git",

@@ -7,15 +7,15 @@ include_once "./include/auth.inc.php";
 
 // checking if credentials are valid
 
-$valid_credentials = check_credentials();
+$valid_credentials = login();
 
-$is_logged = is_logged();
-
-$is_logged = disconnect($is_logged);
+disconnect();
 
 $password_reset = reset_password();
 
 $register_status = register();
+
+$is_logged = is_logged();
 
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
