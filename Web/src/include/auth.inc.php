@@ -13,13 +13,12 @@ include_once "./include/mail.inc.php";
  * 
  * @return boolean value indicating if the credentials are correct or not.
  */
-function login(): bool
-{
+function login(): bool {
     // checking if credentials are passed as post
     if ((isset($_POST["login-email"]) && !empty($_POST["login-email"])) && (isset($_POST["login-password"]) && !empty($_POST["login-password"]))) {
 
         // creating the query
-        $query = "SELECT password, user_id FROM users WHERE (email='" . $_POST["login-email"] . "');";
+        $query = "SELECT password, user_id, last_name, first_name, email, phone FROM users WHERE (email='" . $_POST["login-email"] . "');";
 
         // connecting to the database
         $connection = pg_connect(CONNECTION_STRING);
@@ -33,15 +32,47 @@ function login(): bool
         // free the result
         pg_free_result($result);
 
-        // close the connection
-        pg_close($connection);
-
         if ($result_array) {
 
             if (password_verify($_POST["login-password"], $result_array[0])) {
 
-                // if not, then the result is an array containing the id of the user
                 $_SESSION["user_id"] = $result_array[1];
+                $_SESSION["user_last_name"] = $result_array[2];
+                $_SESSION["user_first_name"] = $result_array[3];
+                $_SESSION["user_email"] = $result_array[4];
+                $_SESSION["user_phone"] = $result_array[5];
+
+                $query_pilot = "SELECT * FROM pilots WHERE (pilot_id=" . $result_array[1] . ");";
+                $query_mechanic = "SELECT * FROM mechanics WHERE (mechanic_id=" . $result_array[1] . ");";
+
+                // getting the results of the query
+                $result = pg_query($connection, $query_pilot);
+
+                // fetch the result of the query
+                $result_data = pg_fetch_all($result);
+
+                // free the result
+                pg_free_result($result);
+
+                if (isset($result_data[0]) && !empty($result_data[0])) {
+                    $_SESSION["pilot"] = $result_data[0];
+                    $_SESSION["is_pilot"] = true;
+                } else {
+                    // getting the results of the query
+                    $result = pg_query($connection, $query_mechanic);
+
+                    // fetch the result of the query
+                    $result_data = pg_fetch_all($result);
+
+                    // free the result
+                    pg_free_result($result);
+
+                    $_SESSION["mechanic"] = $result_data[0];
+                    $_SESSION["is_pilot"] = false;
+                }
+
+                // close the connection
+                pg_close($connection);
 
                 // redirecting the user to the dashboard
                 header("Location: /booking.php");
@@ -51,6 +82,8 @@ function login(): bool
                 return true;
             }
         }
+        // close the connection
+        pg_close($connection);
         return false;
     }
     return true;
@@ -124,7 +157,7 @@ function reset_password(): string | bool
  */
 function register(): string | bool
 {
-    $ids = ["register-firstname", "register-lastname", "register-birthday", "register-email", "register-phone", "register-address", "register-city", "register-postal-code"];
+    $ids = ["register-firstname", "register-lastname", "register-birthdate", "register-email", "register-phone", "register-address", "register-city", "register-postal-code"];
 
     foreach ($ids as $id) {
         if (!isset($_POST[$id]) || empty($_POST[$id])) {
@@ -144,7 +177,7 @@ function register(): string | bool
     $new_user_query = "INSERT INTO users(first_name, last_name, email, phone, password) VALUES ('" . $_POST["register-firstname"] . "', '" . $_POST["register-lastname"] . "', '" . $_POST["register-email"] . "', '" . $_POST["register-phone"] . "', '" . $hashed_password . "');";
 
     // create the query to get infos about the user, especially ID
-    $get_user_query = "SELECT user_id, email, first_name, last_name FROM users WHERE (email='" . $_POST["register-email"] . "');";
+    $get_user_query = "SELECT user_id FROM users WHERE (email='" . $_POST["register-email"] . "');";
 
     // connect to the db
     $connection = pg_connect(CONNECTION_STRING);
@@ -155,6 +188,8 @@ function register(): string | bool
     // if a value is fetch, then the email is already used.
     $email_already_used = pg_fetch_row($result);
 
+    pg_free_result($result);
+
     // in the case of the email unused
     if (!$email_already_used) {
         // create the new user
@@ -163,16 +198,21 @@ function register(): string | bool
         // get the informations about the user
         $user = pg_fetch_row(pg_query($connection, $get_user_query));
 
-        // close the connection to the database
-        pg_close(($connection));
-
         // if the user exist, it means an account is associated with it
         if ($user) {
+            
+            $new_pilot_query = "INSERT INTO pilots(pilot_id, birth_date, pilot_address, city, postal_code) VALUES (" . $user[0] . ", '" . $_POST["register-birthday"] . "', '" . $_POST["register-address"] . "', '" . $_POST["register-city"] . "', '" . $_POST["register-postal-code"] . "');";
+            pg_query($connection, $new_pilot_query);
+
+            // close the connection to the database
+            pg_close(($connection));
+
+
             // mailing the password part
-            $toAddress = $user[0];
-            $toName = $user[1] . " " . $user[2];
+            $toAddress = $_POST["register-email"];
+            $toName = $_POST["register-firstname"] . " " . $_POST["register-lastname"];
             $subject = "Bienvenue sur la plateforme " . WEBSITE_NAME;
-            $content = "<h2>Bienvenue sur la plateforme " . WEBSITE_NAME . "</h2>\n<h3>Bonjour " . $user[1] . " " . $user[2] . "</h3>\n<p>Votre incripstion sur la plateforme est complète !</p><p>Votre mot de passe est : " . $new_password . "</p>\n<p>Vous pouvez le modifier à tout moment en vous connectant sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p>";
+            $content = "<h2>Bienvenue sur la plateforme " . WEBSITE_NAME . "</h2>\n<h3>Bonjour " . $_POST["register-firstname"] . " " . $_POST["register-lastname"] . "</h3>\n<p>Votre incripstion sur la plateforme est complète !</p><p>Votre mot de passe est : " . $new_password . "</p>\n<p>Vous pouvez le modifier à tout moment en vous connectant sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p>";
 
             $is_sent = send_mail($toAddress, $toName, $subject, $content);
 
@@ -182,7 +222,10 @@ function register(): string | bool
                 return "Une erreur est survenue, veuillez réessayer plus tard.";
             }
         }
+        // close the connection to the database
+        pg_close(($connection));
         return "Une erreur est survenue, veuillez réessayer ultérieurement.";
     }
+    pg_close($connection);
     return "Cette adresse email est déjà associée à un compte.";
 }

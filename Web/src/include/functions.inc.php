@@ -15,7 +15,7 @@ function get_register_elements(): array {
         ],
         [
             "name" => "Date de naissance",
-            "id_name" => "register-birthday",
+            "id_name" => "register-birthdate",
             "type" => "date"
         ],
         [

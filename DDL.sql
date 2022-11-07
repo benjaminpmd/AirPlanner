@@ -9,21 +9,28 @@
  */
 
 -- removing all data
---DELETE FROM site_sessions;
---DELETE FROM pilots;
+-- DELETE FROM users CASCADE;
+-- DELETE FROM pilots CASCADE;
+-- DELETE FROM students CASCADE;
+-- DELETE FROM instructors CASCADE;
+-- DELETE FROM aircrafts CASCADE;
+-- DELETE FROM flight_schedules CASCADE;
+-- DELETE FROM flight_records CASCADE;
+-- DELETE FROM lessons CASCADE;
+-- DELETE FROM mechanics CASCADE;
+-- DELETE FROM operations CASCADE;
 
 -- Dropping
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS pilots CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS instructors CASCADE;
-DROP TABLE IF EXISTS aicrafts CASCADE;
+DROP TABLE IF EXISTS aircrafts CASCADE;
 DROP TABLE IF EXISTS flight_schedules CASCADE;
 DROP TABLE IF EXISTS flight_records CASCADE;
 DROP TABLE IF EXISTS lessons CASCADE;
 DROP TABLE IF EXISTS mechanics CASCADE;
 DROP TABLE IF EXISTS operations CASCADE;
-DROP TABLE IF EXISTS site_sessions CASCADE;
 
 -- Create a new table called 'users'
 CREATE TABLE users(
@@ -158,19 +165,3 @@ CREATE table operations(
     CONSTRAINT operations_pk PRIMARY KEY (mechanic_id, aircraft_reg)
     
 );
-
--- Create a new table called 'site_sessions'
-CREATE table site_sessions(
-    uid CHAR(13) UNIQUE NOT NULL,
-    expiration_time TIMESTAMP NOT NULL,
-    user_id INTEGER NOT NULL,
-    CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users(user_id)
-);
-
-
-
--- DML TEST
-INSERT INTO 
-    users(email, phone, last_name, first_name, password)
-VALUES
-    ('dev.benjaminpaumard@gmail.com', '0102030405', 'Pmd', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');
