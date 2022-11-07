@@ -1,17 +1,23 @@
 /**
- * Creation of the tables used for the project
+ * Creation of the tables used for the procject
  *
- * @author Benjamin PAUMARD, Eva FLEUTRY, Xuming MA
+ * @author Benjamin PAUMARD
+ * @co-author Eva FLEUTRY
+ * @co-author Xuming MA
  * @version 1.0.0
  * @since 22/10/2022
  */
+
+-- removing all data
+--DELETE FROM site_sessions;
+--DELETE FROM pilots;
 
 -- Dropping
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS pilots CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS instructors CASCADE;
-DROP TABLE IF EXISTS aircrafts CASCADE;
+DROP TABLE IF EXISTS aicrafts CASCADE;
 DROP TABLE IF EXISTS flight_schedules CASCADE;
 DROP TABLE IF EXISTS flight_records CASCADE;
 DROP TABLE IF EXISTS lessons CASCADE;
@@ -23,7 +29,7 @@ DROP TABLE IF EXISTS site_sessions CASCADE;
 CREATE TABLE users(
     user_id SERIAL,
     phone CHAR(10) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
+    email VARCHAR(100) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
     first_name VARCHAR(30) NOT NULL,
     password VARCHAR(60) NOT NULL,
@@ -35,7 +41,7 @@ CREATE TABLE users(
 CREATE TABLE pilots (
     pilot_id SERIAL REFERENCES users(user_id) NOT NULL,
     birth_date DATE NOT NULL,
-    address VARCHAR(100) NOT NULL,
+    pilot_address VARCHAR(100) NOT NULL,
     city VARCHAR(100) NOT NULL,
     postal_code CHAR(7),
     contribution_date DATE,
@@ -44,7 +50,7 @@ CREATE TABLE pilots (
     night_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
     vpp_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
     rg_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
-    counter INTEGER NOT NULL DEFAULT(0),
+    pilot_counter INTEGER NOT NULL DEFAULT(0),
     balance INTEGER NOT NULL DEFAULT(0),
     rib CHAR(27),
     CONSTRAINT pilot_pk PRIMARY KEY (pilot_id),
@@ -74,12 +80,12 @@ CREATE table aircrafts(
     registration CHAR(6) NOT NULL,
     aircraft_type VARCHAR(10) NOT NULL,
     max_pax INT NOT NULL,
-    range INT NOT NULL,
+    aircraft_range INT NOT NULL,
     flight_potential FLOAT NOT NULL,
     nav_certificate_date DATE NOT NULL,
     ifr_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
     night_qualified BOOLEAN NOT NULL DEFAULT(FALSE),
-    air_craft_counter FLOAT NOT NULL DEFAULT(0),
+    aircraft_counter FLOAT NOT NULL DEFAULT(0),
     has_vpp BOOLEAN DEFAULT(FALSE),
     has_rg BOOLEAN DEFAULT(FALSE),
     price FLOAT NOT NULL,
@@ -112,7 +118,7 @@ CREATE table flight_records(
     departure CHAR(4) NOT NULL,
     departure_counter FLOAT NOT NULL,
     arrival CHAR(4) NOT NULL,
-    arrival_counter FLOAT,
+    arrival_counter FLOAT NOT NULL,
     movements INT NOT NULL,
     flight_time TIME NOT NULL,
     added_fuel INT NOT NULL,
@@ -160,3 +166,11 @@ CREATE table site_sessions(
     user_id INTEGER NOT NULL,
     CONSTRAINT user_id_fk FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
+
+
+
+-- DML TEST
+INSERT INTO 
+    users(email, phone, last_name, first_name, password)
+VALUES
+    ('dev.benjaminpaumard@gmail.com', '0102030405', 'Pmd', 'Benjamin', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');
