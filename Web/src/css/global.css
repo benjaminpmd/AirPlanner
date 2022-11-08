@@ -566,28 +566,25 @@ video {
   grid-column: span 2 / span 2;
 }
 
-.col-span-full {
-  grid-column: 1 / -1;
-}
-
-.m-auto {
-  margin: auto;
+.m-2 {
+  margin: 0.5rem;
 }
 
 .m-4 {
   margin: 1rem;
 }
 
-.m-2 {
-  margin: 0.5rem;
-}
-
-.m-5 {
-  margin: 1.25rem;
+.m-auto {
+  margin: auto;
 }
 
 .m-3 {
   margin: 0.75rem;
+}
+
+.mx-auto {
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .mx-2 {
@@ -610,17 +607,12 @@ video {
   margin-right: 1.25rem;
 }
 
-.mx-auto {
-  margin-left: auto;
-  margin-right: auto;
+.mt-4 {
+  margin-top: 1rem;
 }
 
 .mt-2 {
   margin-top: 0.5rem;
-}
-
-.mt-4 {
-  margin-top: 1rem;
 }
 
 .mr-10 {
@@ -695,20 +687,16 @@ video {
   min-height: 100vh;
 }
 
-.w-5\/6 {
-  width: 83.333333%;
-}
-
 .w-full {
   width: 100%;
 }
 
-.max-w-xl {
-  max-width: 36rem;
+.w-5\/6 {
+  width: 83.333333%;
 }
 
-.max-w-4xl {
-  max-width: 56rem;
+.max-w-xl {
+  max-width: 36rem;
 }
 
 .flex-none {
@@ -808,12 +796,12 @@ video {
   fill: #000;
 }
 
-.p-2 {
-  padding: 0.5rem;
-}
-
 .p-5 {
   padding: 1.25rem;
+}
+
+.p-2 {
+  padding: 0.5rem;
 }
 
 .p-4 {
@@ -857,11 +845,6 @@ video {
   line-height: 2rem;
 }
 
-.text-3xl {
-  font-size: 1.875rem;
-  line-height: 2.25rem;
-}
-
 .text-xl {
   font-size: 1.25rem;
   line-height: 1.75rem;
@@ -875,11 +858,6 @@ video {
 .text-sm {
   font-size: 0.875rem;
   line-height: 1.25rem;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
-  line-height: 2.5rem;
 }
 
 .font-bold {
@@ -1062,11 +1040,6 @@ video {
 }
 
 @media (min-width: 768px) {
-  .md\:mx-2 {
-    margin-left: 0.5rem;
-    margin-right: 0.5rem;
-  }
-
   .md\:mx-20 {
     margin-left: 5rem;
     margin-right: 5rem;
@@ -1078,10 +1051,6 @@ video {
 
   .md\:flex {
     display: flex;
-  }
-
-  .md\:grid {
-    display: grid;
   }
 
   .md\:hidden {
@@ -1096,12 +1065,12 @@ video {
     width: auto;
   }
 
-  .md\:grid-cols-5 {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-  }
-
   .md\:grid-cols-2 {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .md\:grid-cols-5 {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
   .md\:flex-row {
@@ -1141,15 +1110,5 @@ video {
   .dark .dark\:md\:hover\:text-blue-300:hover {
     --tw-text-opacity: 1;
     color: rgb(147 197 253 / var(--tw-text-opacity));
-  }
-}
-
-@media (min-width: 1024px) {
-  .lg\:grid {
-    display: grid;
-  }
-
-  .lg\:grid-cols-3 {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }

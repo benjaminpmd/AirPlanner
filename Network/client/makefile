@@ -2,7 +2,7 @@ SRC_DIR = src
 BUILD_DIR = build
 GXX = gcc
 
-all: main
+all: clean create_build_dir main
 	@echo "Compilation succesfull!"
 	@echo "Use make run to run the script"
 
@@ -17,11 +17,15 @@ client:
 	@$(GXX) -c $(SRC_DIR)/client.c -o $(BUILD_DIR)/client.o
 	@echo "Complilation of client.c succesfull!"
 
+create_build_dir:
+	@echo "Creating the build directory"
+	mkdir -p $(BUILD_DIR)
+
 run:
 	@echo "Running the client"
 	@./$(BUILD_DIR)/main
 
 clean:
 	@echo "cleaning up..."
-	@rm -r $(BUILD_DIR)
+	@rm -rf $(BUILD_DIR)
 	@echo "cleaned up"
