@@ -1,22 +1,51 @@
 import socket
 import threading
 import logging
+import config
 
 from db import Database
 
 
 class Server:
     def __init__(self, database_config: dict, address: str = '', port: int = 1024) -> None:
-        logging.basicConfig(format='%(asctime)s: %(levelname)s: Server: %(message)s',
-                            datefmt='%m/%d/%Y %I:%M:%S %p', level=logging.INFO)
+        """! Constructor of the server class.
+
+        @param database_config the configuration for the postgreSQL. For more information, please refer to the Database class.
+        @param address the address of the server, by default: ''.
+        @param port the port used by the server, by default: 1024.
+        """
+        logging.basicConfig(
+            filename=config.LOGGING_FILE,
+            filemode='a',
+            format='%(asctime)s - %(levelname)s - Server: %(message)s',
+            datefmt='%m/%d/%Y %I:%M:%S %p',
+            level=config.LOGGING_LEVEL
+        )
+
+        # creating the database object
         self.db = Database(database_config)
+
+        # port on which the server is running
         self.port = port
+
+        # creating the server
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # bind the server to its address and its port
         self.server.bind((address, port))
-        self.server.listen(32)
+
+        # listen up to 30 clients
+        self.server.listen(30)
+
+        # list containing all the clients
         self.clients: list = []
-    
+
     def close_client(self, client: socket, address: tuple) -> None:
+        """! close a client.
+        
+        @param client the socket of the client to close.
+        @param address the address of the client to close.
+        """
         logging.info(f"Closing connection with client: {address}")
         try:
             client.close()
@@ -42,9 +71,10 @@ class Server:
                 case "user":
                     res = self.db.get_user(data[1])
                     try:
-                        client.send(res[2].encode())
+                        client.send(res[2].encode("utf8"))
                     except:
-                        logging.warning(f"Forced end of communication: '{other}'")
+                        logging.warning(
+                            f"Forced end of communication: '{other}'")
                         self.close_client(client, address)
                         active_client = False
 
@@ -53,7 +83,8 @@ class Server:
                     try:
                         client.send(res[4].encode())
                     except:
-                        logging.warning(f"Forced end of communication: '{other}'")
+                        logging.warning(
+                            f"Forced end of communication: '{other}'")
                         self.close_client(client, address)
                         active_client = False
 

@@ -32,11 +32,13 @@ if [ "$1" = "" ]; then
     echo "Setting up the environement..."
     echo ""
     setup
+    echo "Environement ready!"
 
 elif [ "$1" = "build" ]; then
     echo "Building..."
     echo ""
     build
+    echo "Website is ready in the dist folder"
 
 else
     echo "Unkown command, must be './setup.sh' or './setup.sh build'"

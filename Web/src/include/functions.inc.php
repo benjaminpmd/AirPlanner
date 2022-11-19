@@ -1,47 +1,34 @@
 <?php
 include_once "./include/utils.inc.php";
 
-function get_register_elements(): array {
-    return [
-        [
-            "name" => "Prénom",
-            "id_name" => "register-firstname",
-            "type" => "text"
-        ],
-        [
-            "name" => "Nom",
-            "id_name" => "register-lastname",
-            "type" => "text"
-        ],
-        [
-            "name" => "Date de naissance",
-            "id_name" => "register-birthdate",
-            "type" => "date"
-        ],
-        [
-            "name" => "Adresse email",
-            "id_name" => "register-email",
-            "type" => "email"
-        ],
-        [
-            "name" => "Téléphone portable",
-            "id_name" => "register-phone",
-            "type" => "tel"
-        ],
-        [
-            "name" => "Adresse postale",
-            "id_name" => "register-address",
-            "type" => "text"
-        ],
-        [
-            "name" => "Ville",
-            "id_name" => "register-city",
-            "type" => "text"
-        ],
-        [
-            "name" => "Code postale",
-            "id_name" => "register-postal-code",
-            "type" => "number"
-        ]
-    ];
+function get_aircrafts(): array {
+    $query = "SELECT * FROM aircrafts;";
+
+    // connect to the db
+    $connection = pg_connect(CONNECTION_STRING);
+
+    // update the password
+    $result = pg_query($connection, $query);
+
+    $result_array = pg_fetch_all($result);
+
+    pg_free_result($result);
+
+    return $result_array;
+}
+
+function get_instructors(): array {
+    $query = "SELECT * FROM instructors JOIN users ON (user_id = fi_id);";
+
+    // connect to the db
+    $connection = pg_connect(CONNECTION_STRING);
+
+    // update the password
+    $result = pg_query($connection, $query);
+
+    $result_array = pg_fetch_all($result);
+
+    pg_free_result($result);
+
+    return $result_array;
 }

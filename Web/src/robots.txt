@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: 
+Sitemap: https://airplanner.benjaminpmd.fr/sitemap.xml

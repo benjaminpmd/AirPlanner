@@ -2,20 +2,22 @@
 # initial declarations
 declare(strict_types=1);
 include_once "./include/utils.inc.php";
-include_once "./include/functions.inc.php";
-include_once "./include/auth.inc.php";
+include_once "./classes/Session.class.php";
+include_once "./classes/User.class.php";
 
 // checking if credentials are valid
+$user = new User();
+$session = new Session();
 
-$valid_credentials = login();
+$valid_credentials = $user->login();
 
-disconnect();
+$session->disconnect();
 
-$password_reset = reset_password();
+$password_reset = $user->reset_password();
 
-$register_status = register();
+$register_status = $user->register();
 
-$is_logged = is_logged();
+$is_logged = $session->is_logged();
 
 # checking if the page title exist
 if (!isset($page_title) || empty($page_title)) {
