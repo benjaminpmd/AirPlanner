@@ -1,5 +1,10 @@
 #include "include/client.h"
 
+char* intToStr(int x) {
+	char* str;
+	sprintf(str, "%d", x);
+	return str;
+}
 
 void setMessage(char *buffer, char *msg) {
 	// remove the possible previous content
@@ -39,30 +44,39 @@ void readMessage(int socket, char *buffer) {
 void lockerCommunication(int socket) {
 	char buffer[MAX_MESSAGE_LENGTH];
 
-	setMessage(buffer, "user&3&");
+	int userId;
+
+	printf("Please enter an user ID: ");
+	scanf("%d", &userId);
+
+	char* userIdStr = intToStr(userId);
+
+	char message[MAX_MESSAGE_LENGTH] = "";
+	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s,%s,", "flight", REGISTRATION, userIdStr);
+	setMessage(buffer, message);
     sendMessage(socket, buffer);
 	readMessage(socket, buffer);
-    printf("From Server : %s\n", buffer);
 
-	setMessage(buffer, "firstname&7&");
+	if (atoi(buffer) == -1) {
+		printf("No flight is scheduled for this aircraft with your ID.\n");
+	}
+	else {
+		printf("Opening locker...\n");
+	}
+
+	setMessage(buffer, "closeConnection,");
 	sendMessage(socket, buffer);
 	readMessage(socket, buffer);
-    printf("From Server : %s\n", buffer);
-
-	setMessage(buffer, "closeConnection&");
-	sendMessage(socket, buffer);
-	readMessage(socket, buffer);
-    printf("From Server : %s\n", buffer);
 }
 
 void hangarCommunication(int sock, void* msg, uint32_t msgsize)
 {
 	if(write(sock, msg, msgsize) < 0){
-		printf("Probleme lors de l'envoi");
+		printf("Error occurred while sending the message");
 		close(sock);
 		exit(1);
 	}
-	printf("Message envoyé, (%d bits envoyés).\n", msgsize);
+	printf("M, (%d bits envoyés).\n", msgsize);
 	
 }
 

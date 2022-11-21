@@ -16,6 +16,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdarg.h>
 
 /**
  * Address of the client.
@@ -29,6 +30,17 @@
  * Max length of output/input message.
  */
 #define MAX_MESSAGE_LENGTH 700
+
+#define REGISTRATION "F-BXNX"
+
+
+/**
+ * Function that converts an int to a str for formatting the request to the server.
+ * 
+ * @param x the integer to convert.
+ * @returns a string that contains the int.
+*/
+char* intToStr(int x);
 
 /**
  * Function that set the message to send.

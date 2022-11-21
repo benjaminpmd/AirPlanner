@@ -27,14 +27,27 @@ class Database:
         # create the connection string for the connection to the postgreSQL
         self.connection_string: str = f"host={db_config.get('HOST')} port={db_config.get('PORT')} dbname={db_config.get('DBNAME')} user={db_config.get('USER')} password={db_config.get('PASSWORD')}"
 
-
     def get_user(self, user_id: str) -> tuple:
         """
         @param user_id: test
         """
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM users WHERE user_id={user_id};")
+        cursor.execute(f"SELECT * FROM users WHERE (user_id={user_id});")
+        res: tuple = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return res
+
+    def get_flight(self, registration: str, pilot_id: str) -> tuple:
+        """! Get the flight for a specific aircraft and user depending on the date.
+        @param registration the aircraft registration
+        @param user_id the ID of the user
+        @return the informations about the flight.
+        """
+        connection: psql.connection = psql.connect(self.connection_string)
+        cursor: psql.cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM flights WHERE (pilot_id={pilot_id} AND aircraft_reg='{registration}');")
         res: tuple = cursor.fetchone()
         cursor.close()
         connection.close()

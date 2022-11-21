@@ -63,43 +63,63 @@ class Server:
             request_str: str = request_content.decode('utf-8')
             logging.debug(
                 f"Content str received from {address}: {request_str}")
-            data: list = request_str.split("&")
+            data: list = request_str.split(",")
             data.pop()
             logging.debug(f"Splited data received from {address}: {data}")
 
-            match(data[0]):
-                case "user":
-                    res = self.db.get_user(data[1])
-                    try:
-                        client.send(res[2].encode("utf8"))
-                    except:
-                        logging.warning(
-                            f"Forced end of communication: '{other}'")
-                        self.close_client(client, address)
+            if (len(data) == 0):
+                logging.warning(
+                f"Content str received is null")
+                res = "endConnection"
+                client.send(res.encode())
+                active_client = False
+                self.close_client(client, address)
+            else:
+                match(data[0]):
+                    case "flight":
+                        if (len(data) == 3):
+                            try:
+                                res = self.db.get_flight(data[1], data[2])
+                                if (res != None):
+                                    print(res[0])
+                                    client.send(str(res[0]).encode("utf8"))
+                                else:
+                                    client.send(b"-1")
+                            except Exception as e:
+                                print(e)
+                                logging.warning(
+                                    f"Forced end of communication at flight request")
+                                client.send(b"closeConnection")
+                                self.close_client(client, address)
+                                active_client = False
+                        else:
+                            logging.warning(
+                                    f"Forced end of communication at flight request, not enough arguments")
+                            self.close_client(client, address)
+                            active_client = False
+
+                    case "firstname":
+                        res = self.db.get_user(data[1])
+                        try:
+                            client.send(res[4].encode())
+                        except:
+                            logging.warning(
+                                f"Forced end of communication at firstname")
+                            self.close_client(client, address)
+                            active_client = False
+
+                    case "closeConnection":
+                        res = "endConnection"
+                        client.send(res.encode())
                         active_client = False
-
-                case "firstname":
-                    res = self.db.get_user(data[1])
-                    try:
-                        client.send(res[4].encode())
-                    except:
-                        logging.warning(
-                            f"Forced end of communication: '{other}'")
                         self.close_client(client, address)
+
+                    case other:
+                        logging.warning(f"Unexpected communication, received: {other}")
+                        res = "endConnection"
+                        client.send(res.encode())
                         active_client = False
-
-                case "closeConnection":
-                    res = "endConnection"
-                    client.send(res.encode())
-                    active_client = False
-                    self.close_client(client, address)
-
-                case other:
-                    logging.warning(f"Unexpected communication: '{other}'")
-                    res = "endConnection"
-                    client.send(res.encode())
-                    active_client = False
-                    self.close_client(client, address)
+                        self.close_client(client, address)
 
     def run(self) -> None:
         logging.info("Running the server")
