@@ -60,11 +60,10 @@ class Server:
             request_content = client.recv(self.port)
             logging.debug(
                 f"Content received from {address}: {request_content}")
-            request_str: str = request_content.decode('utf-8')
+            request_str: str = request_content.decode('utf8')
             logging.debug(
-                f"Content str received from {address}: {request_str}")
+                f"Content str received from {address}: '{request_str}'")
             data: list = request_str.split(",")
-            data.pop()
             logging.debug(f"Splited data received from {address}: {data}")
 
             if (len(data) == 0):

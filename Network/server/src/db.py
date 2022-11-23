@@ -27,7 +27,7 @@ class Database:
         # create the connection string for the connection to the postgreSQL
         self.connection_string: str = f"host={db_config.get('HOST')} port={db_config.get('PORT')} dbname={db_config.get('DBNAME')} user={db_config.get('USER')} password={db_config.get('PASSWORD')}"
 
-    def get_user(self, user_id: str) -> tuple or NOne:
+    def get_user(self, user_id: str) -> tuple or None:
         """
         @param user_id: test
         """

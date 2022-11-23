@@ -26,8 +26,7 @@ if (!isset($page_title) || empty($page_title)) {
 
 if ($page_title != WEBSITE_NAME) {
   $meta_title = $page_title . " — " . WEBSITE_NAME;
-}
-else {
+} else {
   $meta_title = $page_title;
 }
 
@@ -67,7 +66,7 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <meta property="og:locale" content="fr_FR" />
   <meta property="og:url" content="<?php echo WEBSITE_URL . $page_canonical; ?>" />
   <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="AC Solutions" />
+  <meta property="og:site_name" content="AirPlanner" />
   <meta property="og:title" content="<?php echo $meta_title; ?>" />
   <meta property="og:description" content="<?php echo $page_description; ?>" />
   <meta property="og:image" content="<?php echo WEBSITE_URL . "/img/favicon.ico"; ?>" />
@@ -80,19 +79,19 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <meta name="twitter:image" content="<?php echo WEBSITE_URL . "/img/favicon.ico"; ?>" />
 
   <title><?php echo $meta_title; ?></title>
+  <link rel="icon" type="image/x-icon" href="/img/favicon.ico">
   <script src="./js/index.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Red+Hat+Display&amp;display=swap" rel="stylesheet" />
   <link href="./css/global.css" rel="stylesheet" />
 </head>
 
-<body 
-  class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image: url('/img/home_bg.jpg');">
+<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image: url('/img/home_bg.jpg');">
   <header class="bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out">
     <div class="top-0 z-40 flex-none mx-auto w-full">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">
         <div class="flex justify-between">
           <a class="flex" href="/">
-            <p class="self-center flex ml-2 text-2xl font-extrabold"><?php echo WEBSITE_NAME; ?></p>
+            <span class="self-center flex ml-2 text-2xl font-extrabold text-gray-900 whitespace-nowrap dark:text-white"><img src="/img/favicon.ico" class="w-9 h-9" alt="AirPlanner logo" /><?php echo WEBSITE_NAME; ?></span>
           </a>
           <div class="flex items-center md:hidden">
             <button class="rounded-full text-sm p-4 inline-flex items-center" data-aw-toggle-color-scheme>

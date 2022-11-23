@@ -9,5 +9,6 @@ venv
 
 # FILES
 .env
-logs.txt
+logs.*
 docs/.$schema_ea.drawio.bkp
+temp.*

@@ -9,7 +9,7 @@ if ($session->is_logged() && $user->is_pilot()) {
     include "./include/booking.inc.php";
 }
 else {
-    echo "<h2>Veuillez vous connecter</h2>\n";
+    include "./include/connection.inc.php";
 }
 
 include "./include/footer.inc.php";

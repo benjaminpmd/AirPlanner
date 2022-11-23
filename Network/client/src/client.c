@@ -1,16 +1,20 @@
 #include "include/client.h"
 #include "include/logger.h"
 
-void setMessage(char *buffer, char *msg) {
-	// remove the possible previous content
-	bzero(buffer, MAX_MESSAGE_LENGTH);
-	// apply the new value of the string
-	strcpy(buffer, msg);
+void buildMessage(char *message, int argc, ...) {
+	va_list argv;
+
+	va_start(argv, argc);
+	for (int i=0; i < argc; i++) {
+		snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s", message, va_arg(argv, char*));
+	}
+	printf("%s\n", message);
+	va_end(argv);
 }
 
 void sendMessage(int socket, char *buffer) {
 	// write the message, if the function return an int inferior to 0, then the message have not been sent
-	if(send(socket, buffer, MAX_MESSAGE_LENGTH, 0) < 0) {
+	if(send(socket, buffer, strlen(buffer), 0) < 0) {
 		printf("Error: message could not be delivered to the server.\n");
 		// close the socket and exit
 		close(socket);
@@ -37,7 +41,7 @@ void readMessage(int socket, char *buffer) {
 }
 
 void lockerCommunication(int socket) {
-	char buffer[MAX_MESSAGE_LENGTH];
+	char readerBuffer[MAX_MESSAGE_LENGTH];
 
 	int userId;
 
@@ -48,21 +52,31 @@ void lockerCommunication(int socket) {
 	sprintf(userIdStr, "%d", userId);
 
 	char message[MAX_MESSAGE_LENGTH] = "";
-	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s,%s,", "flight", REGISTRATION, userIdStr);
-	setMessage(buffer, message);
-    sendMessage(socket, buffer);
-	readMessage(socket, buffer);
+	char msg[MAX_MESSAGE_LENGTH] = "";
+	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s,%s", "flight", REGISTRATION, userIdStr);
+	buildMessage(msg, 3, "flight", REGISTRATION, userIdStr);
+    sendMessage(socket, message);
+	readMessage(socket, readerBuffer);
 
-	if (atoi(buffer) == -1) {
+	if (atoi(readerBuffer) == -1) {
 		printf("No flight is scheduled for this aircraft with your ID.\n");
 	}
 	else {
 		printf("Opening locker...\n");
 	}
+	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s", "firstname", userIdStr);
+    sendMessage(socket, message);
+	readMessage(socket, readerBuffer);
 
-	setMessage(buffer, "closeConnection,");
-	sendMessage(socket, buffer);
-	readMessage(socket, buffer);
+	if (atoi(readerBuffer) == -1) {
+		printf("No flight is scheduled for this aircraft with your ID.\n");
+	}
+	else {
+		printf("%s\n", readerBuffer);
+	}
+	snprintf(message, MAX_MESSAGE_LENGTH, "%s", "closeConnection");
+	sendMessage(socket, message);
+	readMessage(socket, readerBuffer);
 }
 
 void hangarCommunication(int sock, void* msg, uint32_t msgsize)

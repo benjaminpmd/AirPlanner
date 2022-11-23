@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # function to setup the environment
 setup() {
@@ -32,7 +32,7 @@ setup() {
 run() {
     source ./venv/bin/activate
     which pip
-    python3  src/main.py
+    python3 src/main.py
 }
 
 if [ "$1" = "" ]; then
