@@ -52,6 +52,14 @@ class User {
                     if (isset($result_data[0]) && !empty($result_data[0])) {
                         $_SESSION["pilot"] = $result_data[0];
                         $_SESSION["is_pilot"] = true;
+                        $_SESSION["is_mechanic"] = false;
+
+                        // close the connection
+                        pg_close($connection);
+
+                        // redirecting the user to the dashboard
+                        header("Location: /booking.php");
+
                     } else {
                         // getting the results of the query
                         $result = pg_query($connection, $query_mechanic);
@@ -64,16 +72,18 @@ class User {
 
                         $_SESSION["mechanic"] = $result_data[0];
                         $_SESSION["is_pilot"] = false;
+                        $_SESSION["is_mechanic"] = true;
+
+                        // close the connection
+                        pg_close($connection);
+
+                        // redirecting the user to the dashboard
+                        header("Location: /mechanic.php");
                     }
-
-                    // close the connection
-                    pg_close($connection);
-
-                    // redirecting the user to the dashboard
-                    header("Location: /booking.php");
 
                     // exiting
                     exit();
+
                     return true;
                 }
             }
@@ -221,6 +231,21 @@ class User {
         }
         pg_close($connection);
         return "Cette adresse email est déjà associée à un compte.";
+    }
+
+
+    function is_pilot(): bool {
+        if (isset($_SESSION["is_pilot"]) && !empty($_SESSION["is_pilot"])) {
+            return $_SESSION["is_pilot"];
+        }
+        else return false;
+    }
+
+    function is_mechanic(): bool {
+        if (isset($_SESSION["is_mechanic"]) && !empty($_SESSION["is_mechanic"])) {
+            return $_SESSION["is_mechanic"];
+        }
+        else return false;
     }
 }
 ?>

@@ -1,4 +1,5 @@
 #include "include/client.h"
+#include "include/logger.h"
 
 void setMessage(char *buffer, char *msg) {
 	// remove the possible previous content
