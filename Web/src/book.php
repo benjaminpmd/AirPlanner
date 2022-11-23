@@ -1,5 +1,5 @@
 <?php
-$page_title = "Portail de réservation";
+$page_title = "Réservation";
 $page_date = "23 Octobre 2022";
 $page_canonical = "/booking.php";
 

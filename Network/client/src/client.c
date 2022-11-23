@@ -1,11 +1,5 @@
 #include "include/client.h"
 
-char* intToStr(int x) {
-	char* str;
-	sprintf(str, "%d", x);
-	return str;
-}
-
 void setMessage(char *buffer, char *msg) {
 	// remove the possible previous content
 	bzero(buffer, MAX_MESSAGE_LENGTH);
@@ -49,7 +43,8 @@ void lockerCommunication(int socket) {
 	printf("Please enter an user ID: ");
 	scanf("%d", &userId);
 
-	char* userIdStr = intToStr(userId);
+	char userIdStr[4] = "";
+	sprintf(userIdStr, "%d", userId);
 
 	char message[MAX_MESSAGE_LENGTH] = "";
 	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s,%s,", "flight", REGISTRATION, userIdStr);
