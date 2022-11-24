@@ -59,8 +59,8 @@ void lockerCommunication(int socket) {
 	// and the userInput conversion into a string
 	char buffer[MAX_MESSAGE_LENGTH] = "";
 	int userIdInput;
-	char *userId;
-	char *flightId;
+	char userId[4];
+	char flightId[4];
 
 	// ask the input of the user (simulate a card read)
 	printf("Veuillez entrer un ID utilisateur : ");

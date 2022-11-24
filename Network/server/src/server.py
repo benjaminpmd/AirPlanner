@@ -131,7 +131,8 @@ class Server:
                         self.close_client(client, address)
 
     def run(self) -> None:
-        logging.info("Running the server")
+        print(f"Running the server on port: {self.port}")
+        logging.info(f"Running the server on port: {self.port}")
         self.server.listen()
         while True:
             client, client_address = self.server.accept()

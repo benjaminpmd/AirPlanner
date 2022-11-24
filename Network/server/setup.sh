@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # function to setup the environment
 setup() {
@@ -17,8 +17,6 @@ setup() {
     echo "Activating server environment..."
     source ./venv/bin/activate
 
-    which pip
-
     echo ""
     echo "Installing librairies..."
     pip install -r requierements.txt
@@ -31,7 +29,6 @@ setup() {
 
 run() {
     source ./venv/bin/activate
-    which pip
     python3 src/main.py
 }
 

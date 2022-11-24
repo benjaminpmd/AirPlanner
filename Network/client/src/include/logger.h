@@ -5,8 +5,7 @@
 #include <string.h>
 
 #define FILE_NAME "logs.txt"
-# define LEVELS {debug, info, warning, error}
 
-void logTrace(char *level, char *message);
+void logData(char *level, char *message);
 
 #endif

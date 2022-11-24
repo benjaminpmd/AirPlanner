@@ -1,4 +1,5 @@
 #include "include/client.h"
+#include "include/logger.h"
 
 int main(int argc, char const *argv[]) {
 
