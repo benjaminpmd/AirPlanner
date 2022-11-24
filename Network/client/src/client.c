@@ -27,6 +27,10 @@ void setMessage(char *buffer, int argc, ...) {
 }
 
 void sendMessage(int socket, char *buffer) {
+	struct timeval timeout;      
+    timeout.tv_sec = 10;
+    timeout.tv_usec = 0;
+    
 	// write the message, if the function return an int inferior to 0, then the message have not been sent
 	if(send(socket, buffer, strlen(buffer), 0) < 0) {
 		printf("Erreur : Impossibilité de communiquer avec le serveur.\n");

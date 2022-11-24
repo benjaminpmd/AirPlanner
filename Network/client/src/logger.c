@@ -1,14 +1,18 @@
 #include "include/logger.h"
 #include <time.h>
 
-void logData(char *level, char *message) {
-    char *message, *timeString;
-    time_t now;
-    time(&now);
-    strftime(timeString, 26, "%Y-%m-%d %H:%M:%S", now);
+#define MAX_MESSAGE_SIZE 200
 
-    sprintf(message ,"%s - %s - CLient: %s", timeString, level,  message);
+void logData(char *level, char *message) {
+    char data[MAX_MESSAGE_SIZE], timeString[30];
+    time_t timestamp = time(NULL);
+    struct tm *ptime = localtime(&timestamp);
+    strftime(timeString, 30, "%d/%m/%Y %H:%M:%S", ptime);
+
+    snprintf(data, MAX_MESSAGE_SIZE, "%s - %s - Client: %s\n", timeString, level,  message);
     FILE *fptr;
 
     fptr = fopen(FILE_NAME, "a");
+    fputs(data, fptr);
+    fclose(fptr);
 }

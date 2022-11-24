@@ -8,14 +8,18 @@ all: clean create_build_dir main
 
 main: client
 	@echo "Compiling main..."
-	@$(GXX) $(SRC_DIR)/main.c -o $(BUILD_DIR)/main $(BUILD_DIR)/client.o
+	@$(GXX) $(SRC_DIR)/main.c -o $(BUILD_DIR)/main $(BUILD_DIR)/client.o $(BUILD_DIR)/logger.o
 	@echo "Complilation of main.c succesfull!"
 
-client:
-	mkdir -p build
+client: logger
 	@echo "Compiling client..."
 	@$(GXX) -c $(SRC_DIR)/client.c -o $(BUILD_DIR)/client.o
 	@echo "Complilation of client.c succesfull!"
+
+logger:
+	@echo "Compiling logger..."
+	@$(GXX) -c $(SRC_DIR)/logger.c -o $(BUILD_DIR)/logger.o
+	@echo "Complilation of logger.c succesfull!"
 
 create_build_dir:
 	@echo "Creating the build directory"

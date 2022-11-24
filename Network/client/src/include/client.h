@@ -22,7 +22,7 @@
 /**
  * Address of the client.
  */
-#define ADDRESS "127.0.0.1"
+#define ADDRESS "192.168.3.137"
 /**
  * Port on which the server is running.
  */
