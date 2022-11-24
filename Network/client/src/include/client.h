@@ -38,9 +38,9 @@
  * Function that converts an int to a str for formatting the request to the server.
  * 
  * @param x the integer to convert.
- * @returns a string that contains the int.
+ * @param o the output.
 */
-char* intToStr(int x);
+void intToStr(int x, char *o);
 
 /**
  * Function that set the message to send.
@@ -48,7 +48,7 @@ char* intToStr(int x);
  * @param buffer the message buffer to use.
  * @param msg the message to send.
 */
-void setMessage(char *buffer, char *msg);
+void setMessage(char *buffer, int argc, ...);
 
 /**
  * Function that send a message to the server.
@@ -73,6 +73,6 @@ void readMessage(int socket, char *buffer);
  */
 void lockerCommunication(int socket);
 
-void hangarCommunication(int sock, void* msg, uint32_t msgsize);
+void hangarCommunication(int socket);
 
 #endif

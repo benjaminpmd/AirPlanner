@@ -97,6 +97,16 @@ class Server:
                             self.close_client(client, address)
                             active_client = False
 
+                    case "open-locker":
+                        res = self.db.get_flight_from_id(data[1])
+                        try:
+                            client.send(res[1].encode())
+                        except:
+                            logging.warning(
+                                f"Forced end of communication at firstname")
+                            self.close_client(client, address)
+                            active_client = False
+
                     case "firstname":
                         res = self.db.get_user(data[1])
                         try:
@@ -107,15 +117,15 @@ class Server:
                             self.close_client(client, address)
                             active_client = False
 
-                    case "closeConnection":
-                        res = "endConnection"
+                    case "close-connection":
+                        res = "closing-connection"
                         client.send(res.encode())
                         active_client = False
                         self.close_client(client, address)
 
                     case other:
                         logging.warning(f"Unexpected communication, received: {other}")
-                        res = "endConnection"
+                        res = "closing-connection"
                         client.send(res.encode())
                         active_client = False
                         self.close_client(client, address)

@@ -53,6 +53,20 @@ class Database:
         connection.close()
         return res
 
+    def get_flight_from_id(self, flight_id: str) -> tuple or None:
+        """! Get the flight for a specific aircraft and user depending on the date.
+        @param registration the aircraft registration
+        @param user_id the ID of the user
+        @return the informations about the flight.
+        """
+        connection: psql.connection = psql.connect(self.connection_string)
+        cursor: psql.cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM flights WHERE (flight_id={flight_id});")
+        res: tuple = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return res
+
     def get_mechanic(self, user_id: str) -> tuple or None:
         """
         @param user_id the ID of the mechanic

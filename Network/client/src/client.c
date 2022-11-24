@@ -1,21 +1,35 @@
 #include "include/client.h"
 #include "include/logger.h"
 
-void buildMessage(char *message, int argc, ...) {
+void intToStr(int x, char *o) {
+	sprintf(o, "%d", x);
+}
+
+void setMessage(char *buffer, int argc, ...) {
+	bzero(buffer, MAX_MESSAGE_LENGTH);
+	
 	va_list argv;
 
 	va_start(argv, argc);
+	
 	for (int i=0; i < argc; i++) {
-		snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s", message, va_arg(argv, char*));
+		char msgCopy[MAX_MESSAGE_LENGTH-1];
+		strcpy(msgCopy, buffer);
+		
+		if (i == 0) {
+			snprintf(buffer, MAX_MESSAGE_LENGTH, "%s", va_arg(argv, char*));
+		}
+		else {
+			snprintf(buffer, MAX_MESSAGE_LENGTH, "%s,%s", msgCopy, va_arg(argv, char*));
+		}
 	}
-	printf("%s\n", message);
 	va_end(argv);
 }
 
 void sendMessage(int socket, char *buffer) {
 	// write the message, if the function return an int inferior to 0, then the message have not been sent
 	if(send(socket, buffer, strlen(buffer), 0) < 0) {
-		printf("Error: message could not be delivered to the server.\n");
+		printf("Erreur : Impossibilité de communiquer avec le serveur.\n");
 		// close the socket and exit
 		close(socket);
 		exit(EXIT_FAILURE);
@@ -33,61 +47,59 @@ void readMessage(int socket, char *buffer) {
 		exit(EXIT_FAILURE);
 	}
 	// check if the connection ends
-	else if ((strcmp(buffer, "endConnection")) == 0) {
-        printf("Client Exit...\n");
+	else if ((strcmp(buffer, "closing-connection")) == 0) {
+        printf("Arrêt du client\n");
 		close(socket);
 		exit(EXIT_SUCCESS);
     }
 }
 
 void lockerCommunication(int socket) {
-	char readerBuffer[MAX_MESSAGE_LENGTH];
+	// init variables used in the function, the buffer for communication, the userInput
+	// and the userInput conversion into a string
+	char buffer[MAX_MESSAGE_LENGTH] = "";
+	int userIdInput;
+	char *userId;
+	char *flightId;
 
-	int userId;
+	// ask the input of the user (simulate a card read)
+	printf("Veuillez entrer un ID utilisateur : ");
+	scanf("%d", &userIdInput);
+	
+	// convert the input to a string
+	intToStr(userIdInput, userId);
 
-	printf("Please enter an user ID: ");
-	scanf("%d", &userId);
+	/* Request if a flight is currently scheduled with the registration and userID provided */
+	
+	// create the command and save it into the buffer
+	setMessage(buffer, 3, "flight", REGISTRATION, userId);
+    // send the buffer to the server
+	sendMessage(socket, buffer);
+	// read the response from the server
+	readMessage(socket, buffer);
 
-	char userIdStr[4] = "";
-	sprintf(userIdStr, "%d", userId);
-
-	char message[MAX_MESSAGE_LENGTH] = "";
-	char msg[MAX_MESSAGE_LENGTH] = "";
-	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s,%s", "flight", REGISTRATION, userIdStr);
-	buildMessage(msg, 3, "flight", REGISTRATION, userIdStr);
-    sendMessage(socket, message);
-	readMessage(socket, readerBuffer);
-
-	if (atoi(readerBuffer) == -1) {
-		printf("No flight is scheduled for this aircraft with your ID.\n");
+	// act depending of the return from the server
+	if (atoi(buffer) == -1) {
+		printf("Aucun vol n'est prévu pour l'appareil %s avec cet identifiant.\n", REGISTRATION);
 	}
 	else {
-		printf("Opening locker...\n");
+		intToStr(atoi(buffer), flightId);
+		printf("Ouverture du casier de l'appareil %s\n", REGISTRATION);
+		// create the command and save it into the buffer
+		setMessage(buffer, 2, "open-locker", flightId);
+    	// send the buffer to the server
+		sendMessage(socket, buffer);
+		// read the response from the server
+		readMessage(socket, buffer);
 	}
-	snprintf(message, MAX_MESSAGE_LENGTH, "%s,%s", "firstname", userIdStr);
-    sendMessage(socket, message);
-	readMessage(socket, readerBuffer);
 
-	if (atoi(readerBuffer) == -1) {
-		printf("No flight is scheduled for this aircraft with your ID.\n");
-	}
-	else {
-		printf("%s\n", readerBuffer);
-	}
-	snprintf(message, MAX_MESSAGE_LENGTH, "%s", "closeConnection");
-	sendMessage(socket, message);
-	readMessage(socket, readerBuffer);
+	setMessage(buffer, 1, "close-connection");
+	sendMessage(socket, buffer);
+	readMessage(socket, buffer);
 }
 
-void hangarCommunication(int sock, void* msg, uint32_t msgsize)
-{
-	if(write(sock, msg, msgsize) < 0){
-		printf("Error occurred while sending the message");
-		close(sock);
-		exit(1);
-	}
-	printf("M, (%d bits envoyés).\n", msgsize);
-	
+void hangarCommunication(int socket) {
+	printf("WIP\n");
 }
 
 
