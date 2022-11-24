@@ -131,7 +131,7 @@ class Server:
                         self.close_client(client, address)
 
     def run(self) -> None:
-        print(f"Running the server on port: {self.port}")
+        print(f"Running the server at {socket.gethostbyname(socket.gethostname())} on port: {self.port}")
         logging.info(f"Running the server on port: {self.port}")
         self.server.listen()
         while True:
