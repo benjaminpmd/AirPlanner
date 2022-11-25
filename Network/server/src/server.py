@@ -1,7 +1,7 @@
 import socket
 import threading
 import logging
-import time
+import requests
 import config
 
 from db import Database
@@ -105,11 +105,11 @@ class Server:
                         res = self.db.check_for_locker_open(data[1], data[2])
                         try:
                             if (res != None):
-                                if (res[0]):
-                                    # if the first element is true, it's a mechanic, send code 1
+                                if (res[1]):
+                                    # if the second element is true, it's a mechanic, send code 1
                                     client.send(b"1")
-                                elif (res[1]):
-                                    # if the first element is true, it's a pilot, send code 2
+                                elif (res[2] and not res[0]):
+                                    # if the third element is true, it's a pilot, send code 2 if the aircraft is available (indicated in the first element of res)
                                     client.send(b"2")
                                 else:
                                     # the locker cannot be opened, send code 0
@@ -118,7 +118,7 @@ class Server:
                                 # if the result not none, then the locker cannot be opened
                                 # retuning the code 0
                                 client.send(b"0")
-                        except Exception as e:
+                        except:
                             # catch exception in case the message could not be sent
                             logging.warning(f"Forced end of communication at flight request")
                             self.close_client(client, address)
@@ -129,6 +129,39 @@ class Server:
                         self.close_client(client, address)
                         active_client = False
                 
+                # client sent a command to ask if the door can be opened
+                elif(data[0] == "open-door"):
+                    
+                    # len must be 3 as the command is followed by a parking number and an user ID
+                    if (len(data) == 3):
+                        
+                        # get the result: if the locker can be opened or not
+                        res = self.db.check_for_door_open(data[1], data[2])
+                        
+                        try:
+                            if (res != None):
+
+                                if ((res[1]) or (res[2] and not res[0])):
+                                    # if the first element is true, it's a mechanic, send code 1
+                                    client.send(b"1")
+                                else:
+                                    # the locker cannot be opened, send code 0
+                                    client.send(b"0")
+                            else:
+                                # if the result not none, then the locker cannot be opened
+                                # retuning the code 0
+                                client.send(b"0")
+                        except:
+                            # catch exception in case the message could not be sent
+                            logging.warning(f"Forced end of communication at flight request")
+                            self.close_client(client, address)
+                            active_client = False
+                    else:
+                        # else the len of the data is not correct, close the client
+                        logging.warning(f"Forced end of communication at flight request, not enough arguments")
+                        self.close_client(client, address)
+                        active_client = False
+
                 # client sent a command indicating that the locker has been opened
                 elif(data[0] == "locker-opened"):
                     
@@ -142,7 +175,7 @@ class Server:
                             self.db.set_flight_progress(res[0], True)
                             # try to return the data from the client
                             try:
-                                message: str = f"Rappels : Fin du créneau à {res[1]}. Avion situé au parking : {res[2]}."
+                                message: str = f"Rappels : Fin du créneau à {res[1]}. Avion situé au parking {res[2]}."
                                 if (res[3] and res[4]):
                                     message = f"{message}\nVotre instructeur pour ce vol est {res[3]} {res[4]}"
                                 # send the return to the client
@@ -158,11 +191,47 @@ class Server:
                     else:
                         self.close_client(client, address)
                         active_client = False
+
+                # client sent a command indicating that the locker has been opened
+                elif(data[0] == "door-message"):
+                    
+                    # len must be 3 as the command is followed by a parking number and an user ID
+                    if (len(data) == 3):
+                        
+                        # get the result: if the locker can be opened or not
+                        res = self.db.check_for_door_open(data[1], data[2])
+                        
+                        try:
+                            if (res != None):
+
+                                if ((res[1]) or (res[2] and not res[0])):
+                                    # if the first element is true, it's a mechanic, send code 1
+                                    client.send("Vous pouvez accéder au hangar".encode("utf8"))
+                                elif (res[2] and res[0]):
+                                    client.send("L'appareil demandé est actuellement en maintenance".encode("utf8"))
+                                else:
+                                    client.send("Aucun vol n'est actuellement prévu pour votre ID pour cet appareil.")
+                            else:
+                                # if the result not none, then the locker cannot be opened
+                                # retuning the code 0
+                                client.send(b"0")
+                        except:
+                            # catch exception in case the message could not be sent
+                            logging.warning(f"Forced end of communication at flight request")
+                            self.close_client(client, address)
+                            active_client = False
+                    else:
+                        # else the len of the data is not correct, close the client
+                        logging.warning(f"Forced end of communication at flight request, not enough arguments")
+                        self.close_client(client, address)
+                        active_client = False
+                
                 # client sent a command to terminate the connection
                 elif (data[0] == "close-connection"):
                     # send that the communication is terminated
                     active_client = False
                     self.close_client(client, address)
+
                 # client sent an unknown command
                 else:
                     # close the client

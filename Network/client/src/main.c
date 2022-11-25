@@ -42,7 +42,6 @@ int main(int argc, char const *argv[]) {
     // if the connection is successful
     if (connectionStatus == 0) {
         logInfo("connection successful");
-        printf("connection réussi\n");
         int selection;
         do {
             // ask for which system to run
@@ -56,13 +55,11 @@ int main(int argc, char const *argv[]) {
             }
 
             if ((selection != 1) && (selection != 2)) {
-                printf("\nErreur : Veuillez entrer une donnée correcte.\n\n");
                 logWarning("user input error");
             }
         } while ((selection != 1) && (selection != 2));
     }
     else {
-        printf("Erreur: Le serveur ne peut pas être atteint.\n");
         logError("server unavailable");
     }
 

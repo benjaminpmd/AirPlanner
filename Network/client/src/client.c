@@ -137,7 +137,7 @@ void hangarCommunication(int socket) {
 	/* Request if a flight is currently scheduled with the registration and userID provided */
 	
 	// create the command and save it into the buffer
-	setMessage(buffer, 3, "open-locker", REGISTRATION, userId);
+	setMessage(buffer, 3, "open-door", PARKING, userId);
     // send the buffer to the server
 	sendMessage(socket, buffer);
 	// read the response from the server
@@ -146,25 +146,21 @@ void hangarCommunication(int socket) {
 	// act depending of the return from the server
 	if (atoi(buffer) == 1) {
 		// code 1 means that the user is a mechanic
-		printf("Ouverture du casier de l'appareil %s\n", REGISTRATION);
-	}
-	else if (atoi(buffer) == 2) {
-		// code 2 means that the user is a pilot with a scheduled flight
-		printf("Ouverture du casier de l'appareil %s\n", REGISTRATION);
-		
-		// create the command and save it into the buffer
-		setMessage(buffer, 3, "locker-opened", REGISTRATION, userId);
-    	// send the buffer to the server
-		sendMessage(socket, buffer);
-		// read the response from the server
-		readMessage(socket, buffer);
-		// print the information sent by the server, should be indications about the flight
-		printf("%s\n", buffer);
+		printf("Ouverture de la porte...\n");
 	}
 	else {
 		// else, do not open the locker
-		printf("Aucun vol n'est enregistré pour l'appareil %s avec cet ID.\n", REGISTRATION);
+		printf("Vous ne pouvez pas accéder à ce hangar.\n");
 	}
+
+	// create the command and save it into the buffer
+	setMessage(buffer, 3, "door-message", PARKING, userId);
+    // send the buffer to the server
+	sendMessage(socket, buffer);
+	// read the response from the server
+	readMessage(socket, buffer);
+
+	printf("%s\n", buffer);
 
 	// close the connection
 	setMessage(buffer, 1, "close-connection");

@@ -8,7 +8,7 @@ include_once './include/utils.inc.php';
     <div class="w-full grid grid-cols-1 md:grid-cols-5">
 
       <div class="text-left col-span-2 flex flex-col h-full my-5 mr-10">
-        <p class="text-5xl flex"><img src="/img/airplanner_logo.png" class="w-14 h-14" /><span class="text-blue-500">Air</span><span class="text-white">Plan</span><span class="text-red-500">ner</span></p>
+        <p class="text-5xl flex"><img src="/img/airplanner_logo.png" class="w-14 h-14" alt="airplanner logo" /><span class="text-blue-500">Air</span><span class="text-white">Plan</span><span class="text-red-500">ner</span></p>
         <p class="opacity-70"><?php echo WEBSITE_NAME; ?> simplifie la gestion d'aéroclubs en proposant un système de réservation tout en main.</p>
         <p class="opacity-70">Ce projet est réalisé dans le cadre du projet des UE Base de données et Réseau de la licence informatique de Cergy Paris Université.</p>
       </div>

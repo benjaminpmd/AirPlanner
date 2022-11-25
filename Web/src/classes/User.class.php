@@ -3,6 +3,13 @@ class User {
 
     public function __construct() {}
 
+    function get_user_id(): string | null {
+        if (isset($_SESSION["user_id"]) && !empty($_SESSION["user_id"])) {
+            return $_SESSION["user_id"];
+        }
+        else return null;
+    }
+
     /**
      * Function used to check if a user is trying to connect and if the credentials are correct.
      * 

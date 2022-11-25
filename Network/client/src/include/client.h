@@ -34,6 +34,8 @@
 
 #define REGISTRATION "F-BXNX"
 
+#define PARKING "1"
+
 /**
  * Function that converts an int to a str for formatting the request to the server.
  * 

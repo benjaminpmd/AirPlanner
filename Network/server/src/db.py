@@ -4,7 +4,7 @@ import config
 
 
 class Database:
-    def __init__(self, db_config: dict[str, str | None]) -> None:
+    def __init__(self, db_config: dict[str, str]) -> None:
         """ Constructor of the Database class.
 
         @param db_config the configuration of the database.
@@ -30,18 +30,6 @@ class Database:
         # create the connection string for the connection to the postgreSQL
         self.connection_string: str = f"host={db_config.get('HOST')} port={db_config.get('PORT')} dbname={db_config.get('DBNAME')} user={db_config.get('USER')} password={db_config.get('PASSWORD')}"
 
-    def get_user(self, user_id: str) -> tuple or None:
-        """
-        @param user_id: test
-        """
-        connection: psql.connection = psql.connect(self.connection_string)
-        cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM users WHERE (user_id={user_id});")
-        res: tuple = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return res
-
     def check_for_locker_open(self, registration: str, user_id: str) -> tuple:
         """! Get the flight for a specific aircraft and user depending on the date.
 
@@ -51,7 +39,16 @@ class Database:
         """
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic,((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME))AND (a.registration = '{registration}')AND(flight_date = CURRENT_DATE)) ={user_id})  AS is_flight_scheduled FROM users AS u WHERE u.user_id = {user_id};")
+        cursor.execute(f"SELECT ((SELECT o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND ((o.op_date > CURRENT_DATE) OR (o.op_date IS NULL)))='{registration}') as unavailable, ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic,((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME))AND (a.registration = '{registration}')AND(flight_date = CURRENT_DATE)) ={user_id}) AS is_flight_scheduled FROM users AS u WHERE u.user_id = {user_id};")
+        res: tuple = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return res
+
+    def check_for_door_open(self, parking: str, user_id: str):
+        connection: psql.connection = psql.connect(self.connection_string)
+        cursor: psql.cursor = connection.cursor()
+        cursor.execute(f"SELECT ((SELECT a.parking FROM operations AS o JOIN aircrafts AS a ON o.aircraft_reg = a.registration WHERE a.parking = '{parking}' AND ((o.op_date > CURRENT_DATE) OR (o.op_date IS NULL)))='{parking}') as unavailable, ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic, ((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME)) AND (a.parking = {parking})AND(flight_date = CURRENT_DATE))={user_id})  AS is_flight_scheduled  FROM users AS u WHERE u.user_id = {user_id};")
         res: tuple = cursor.fetchone()
         cursor.close()
         connection.close()
@@ -66,8 +63,7 @@ class Database:
         """
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        
-        cursor.execute(f"SELECT f.flight_id, f.end_time, a.parking, u.first_name, u.last_name FROM pilots AS p JOIN flights AS f  ON p.pilot_id = f.pilot_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration LEFT JOIN lessons AS l ON f.flight_id = l.flight_id LEFT JOIN users AS u ON l.fi_id = u.user_id WHERE (p.pilot_id = {pilot_id})AND(f.aircraft_reg = '{registration}') AND (f.flight_date = CURRENT_DATE) AND NOT EXISTS(SELECT  o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND o.op_date > CURRENT_DATE);")
+        cursor.execute(f"SELECT f.flight_id, f.end_time, a.parking, u.first_name, u.last_name FROM pilots AS p JOIN flights AS f  ON p.pilot_id = f.pilot_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration LEFT JOIN lessons AS l ON f.flight_id = l.flight_id LEFT JOIN users AS u ON l.fi_id = u.user_id WHERE (p.pilot_id = {pilot_id})AND(f.aircraft_reg = '{registration}') AND (f.flight_date = CURRENT_DATE) AND NOT EXISTS(SELECT  o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND ((o.op_date > CURRENT_DATE) OR (o.op_date IS NULL)));")
         res: tuple = cursor.fetchone()
         cursor.close()
         connection.close()
