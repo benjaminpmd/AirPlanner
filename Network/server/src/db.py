@@ -42,7 +42,7 @@ class Database:
         connection.close()
         return res
 
-    def check_for_locker_open(self, registration: str, user_id: str) -> tuple or None:
+    def check_for_locker_open(self, registration: str, user_id: str) -> tuple:
         """! Get the flight for a specific aircraft and user depending on the date.
 
         @param registration the aircraft registration.
@@ -57,7 +57,7 @@ class Database:
         connection.close()
         return res
 
-    def get_flight(self, registration: str, pilot_id: str) -> tuple or None:
+    def get_flight(self, registration: str, pilot_id: str) -> tuple:
         """! Get the flight for a specific aircraft and user depending on the date.
 
         @param registration the aircraft registration.
