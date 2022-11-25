@@ -18,24 +18,30 @@ int main(int argc, char const *argv[]) {
 
     // use default or input server address
     if (strlen(address) <= 6) {
+        logDebug("Connecting using default address");
         clientAddress.sin_addr.s_addr = inet_addr(ADDRESS);
     }
     else {
+        logDebug("Connecting using input address");
         clientAddress.sin_addr.s_addr = inet_addr(address);
     }
 
     // use default or input server port
     if (port == 0) {
+        logDebug("Connecting using default port");
         clientAddress.sin_port = htons(PORT);
     }
     else {
+        logDebug("Connecting using input port");
         clientAddress.sin_port = htons(port);
     }
 
     // connection to the server
     int connectionStatus = connect(socketClient, (const struct sockaddr *)&clientAddress, sizeof(clientAddress));
+    
+    // if the connection is successful
     if (connectionStatus == 0) {
-        logData("info", "connection successful");
+        logInfo("connection successful");
         printf("connection réussi\n");
         int selection;
         do {
@@ -51,13 +57,13 @@ int main(int argc, char const *argv[]) {
 
             if ((selection != 1) && (selection != 2)) {
                 printf("\nErreur : Veuillez entrer une donnée correcte.\n\n");
-                logData("warning", "user input error");
+                logWarning("user input error");
             }
         } while ((selection != 1) && (selection != 2));
     }
     else {
         printf("Erreur: Le serveur ne peut pas être atteint.\n");
-        logData("error", "server unavailable");
+        logError("server unavailable");
     }
 
     return EXIT_SUCCESS;
