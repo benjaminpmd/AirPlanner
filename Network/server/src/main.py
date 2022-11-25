@@ -9,28 +9,26 @@
 
 # importing librairies
 from dotenv import dotenv_values
+import config
 from db import Database
 from server import Server
 
-# defining values for the server configuration
-ADDRESS = ''
-PORT = 1025
 
 
 def main() -> None:
     """Function starting the server."""
 
     # getting the values stored in the .env file
-    config = dotenv_values(".env")
+    db_config = dotenv_values(".env")
 
     input_port: str = ''
     port: int = 0
 
 
     while ((port < 1024) or (port > 65535)):
-        input_port = input(f"Please enter a port to use (press enter to use the default port ({PORT}): ")
+        input_port = input(f"Please enter a port to use (press enter to use the default port ({config.PORT}): ")
         if (input_port == ''):
-            port = PORT
+            port = config.PORT
         else:
             try:
                 port = int(input_port)
@@ -39,7 +37,7 @@ def main() -> None:
             except:
                 print("Error: Port must be only numeric.")
 
-    server: Server = Server(config, ADDRESS, port)
+    server: Server = Server(db_config, config.ADDRESS, port)
 
     server.run()
 

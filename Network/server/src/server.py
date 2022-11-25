@@ -1,6 +1,7 @@
 import socket
 import threading
 import logging
+import time
 import config
 
 from db import Database
@@ -15,11 +16,13 @@ class Server:
         @param port the port used by the server, by default: 1024.
         """
         logging.basicConfig(
-            filename=config.LOGGING_FILE,
-            filemode='a',
             format='%(asctime)s - %(levelname)s - Server: %(message)s',
-            datefmt='%m/%d/%Y %I:%M:%S %p',
-            level=config.LOGGING_LEVEL
+            datefmt='%m/%d/%Y %H:%M:%S',
+            level=config.LOGGING_LEVEL,
+            handlers=[
+                logging.FileHandler(config.LOGGING_FILE),
+                logging.StreamHandler()
+            ]
         )
 
         # creating the database object
@@ -28,14 +31,10 @@ class Server:
         # port on which the server is running
         self.port = port
 
-        # creating the server
+        self.address = address
+
+        # creating the server using TCP
         self.server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        # bind the server to its address and its port
-        self.server.bind((address, port))
-
-        # listen up to 30 clients
-        self.server.listen(30)
 
         # list containing all the clients
         self.clients: list = []
@@ -47,100 +46,173 @@ class Server:
         @param address the address of the client to close.
         """
         logging.info(f"Closing connection with client: {address}")
+        self.clients.remove(client)
+        try:
+            client.send(b"closing-connection")
+        except:
+            pass
         try:
             client.close()
         except:
             pass
-        self.clients.remove(client)
 
     def handle_client(self, client: socket, address: tuple) -> None:
+        """! Method that handle exchanges with a client. 
+        This methods call the database and manage communications with a specific client.
+        
+        @param client the client socket to communicate with.
+        @param address, the address and port of the client.
+        """
+
+        # setting the client as active
         logging.info(f"New client with address: {address}")
         active_client: bool = True
+        
+        # while the client is active, receive data from it
         while (active_client):
-            request_content = client.recv(self.port)
-            logging.debug(
-                f"Content received from {address}: {request_content}")
-            request_str: str = request_content.decode('utf8')
-            logging.debug(
-                f"Content str received from {address}: '{request_str}'")
-            data: list = request_str.split(",")
-            logging.debug(f"Splited data received from {address}: {data}")
+            client.settimeout(config.DEFAULT_TIMEOUT)
+            try:
+                # read content sent by the client
+                request_content = client.recv(self.port)
+            except socket.timeout:
+                logging.error(f"terminating connection with client {address} due to timeout.")
+                self.close_client(client, address)
+                return
 
+            logging.debug(f"Content received from {address}: {request_content}")
+            
+            # decode the data
+            request_str: str = request_content.decode('utf8')
+            logging.debug(f"Content str received from {address}: '{request_str}'")
+            
+            # extract the data as a list
+            data: list = request_str.split(",")
+            logging.debug(f"Split data received from {address}: {data}")
+
+            # if no data is provided by the client send message to close the client
             if (len(data) == 0):
-                logging.warning(
-                f"Content str received is null")
-                res = "endConnection"
-                client.send(res.encode())
+                logging.warning(f"Content str received is null")
                 active_client = False
                 self.close_client(client, address)
+            
+            # else the data is not empty, so we can proceed with the data
             else:
+
+                # using match case to check what command the client sent
                 match(data[0]):
-                    case "flight":
+
+                    # case flight, the client wants to check if a locker can be opened
+                    case "open-locker":
+                        # len must be 3 as the command is followed by an aircraft registration and an user ID
                         if (len(data) == 3):
+                            # get the result: if the locker can be opened or not
+                            res = self.db.check_for_locker_open(data[1], data[2])
                             try:
-                                res = self.db.get_flight(data[1], data[2])
                                 if (res != None):
-                                    print(res[0])
-                                    client.send(str(res[0]).encode("utf8"))
+                                    if (res[0]):
+                                        # if the first element is true, it's a mechanic, send code 1
+                                        client.send(b"1")
+                                    elif (res[1]):
+                                        # if the first element is true, it's a pilot, send code 2
+                                        client.send(b"2")
+                                    else:
+                                        # the locker cannot be opened, send code 0
+                                        client.send(b"0")
                                 else:
-                                    client.send(b"-1")
+                                    # if the result not none, then the locker cannot be opened
+                                    # retuning the code 0
+                                    client.send(b"0")
+
                             except Exception as e:
-                                print(e)
-                                logging.warning(
-                                    f"Forced end of communication at flight request")
-                                client.send(b"closeConnection")
+                                # catch exception in case the message could not be sent
+                                logging.warning(f"Forced end of communication at flight request")
                                 self.close_client(client, address)
                                 active_client = False
                         else:
-                            logging.warning(
-                                    f"Forced end of communication at flight request, not enough arguments")
+                            # else the len of the data is not correct, close the client
+                            logging.warning(f"Forced end of communication at flight request, not enough arguments")
                             self.close_client(client, address)
                             active_client = False
 
-                    case "open-locker":
-                        res = self.db.get_flight_from_id(data[1])
-                        try:
-                            client.send(res[1].encode())
-                        except:
-                            logging.warning(
-                                f"Forced end of communication at firstname")
+                    # client sent a command indicating that the locker has been opened
+                    case "locker-opened":
+                        
+                        # checking the data length
+                        if (len(data) == 3):
+                            
+                            # get the flight from the provided ID
+                            res = self.db.get_flight(data[1], data[2])
+                            if (res != None):
+                                # update the flight progression status
+                                self.db.set_flight_progress(res[0], True)
+
+                                # try to return the data from the client
+                                try:
+                                    message: str = f"Rappels : Fin du créneau à {res[1]}. Avion situé au parking : {res[2]}."
+
+                                    if (res[3] and res[4]):
+                                        message = f"{message}\nVotre instructeur pour ce vol est {res[3]} {res[4]}"
+
+                                    # send the return to the client
+                                    client.send(message.encode("utf8"))
+
+                                except:
+                                    # else the len of the data is not correct, close the client
+                                    logging.warning(f"Forced end of communication at firstname")
+                                    self.close_client(client, address)
+                                    active_client = False
+                            else:
+                                self.close_client(client, address)
+                                active_client = False
+                        else:
                             self.close_client(client, address)
                             active_client = False
 
-                    case "firstname":
-                        res = self.db.get_user(data[1])
-                        try:
-                            client.send(res[4].encode())
-                        except:
-                            logging.warning(
-                                f"Forced end of communication at firstname")
-                            self.close_client(client, address)
-                            active_client = False
-
+                    # client sent a command to terminate the connection
                     case "close-connection":
-                        res = "closing-connection"
-                        client.send(res.encode())
+                        # send that the communication is terminated
                         active_client = False
                         self.close_client(client, address)
 
+                    # client sent an unknown command
                     case other:
+                        # close the client
                         logging.warning(f"Unexpected communication, received: {other}")
-                        res = "closing-connection"
-                        client.send(res.encode())
                         active_client = False
                         self.close_client(client, address)
 
     def run(self) -> None:
-        print(f"Running the server on port: {self.port}")
-        logging.info(f"Running the server on port: {self.port}")
-        self.server.listen()
-        while True:
-            client, client_address = self.server.accept()
-            self.clients.append(client)
-            threading.Thread(target=self.handle_client,
-                             args=(client, client_address)).start()
+        """! Method to run the server."""
 
-    def stop(self) -> None:
-        for client in self.clients:
-            client.close()
-        self.server.close()
+        try:
+            # bind the server to its address and its port
+            self.server.bind((self.address, self.port))
+        except PermissionError:
+            logging.error(f"could not bind the server to port: {self.port}")
+            return
+        except Exception as e:
+            logging.error(f"error occurred while binding the server: {e}")
+            return
+            
+        # listen up to 30 clients
+        self.server.listen(30)
+
+        logging.info(f"Running the server on port: {self.port}")
+
+        running_server: bool = True
+        
+        # running the server
+        while (running_server):
+            # accept connections
+            try:
+                client, client_address = self.server.accept()
+                # append the client to all the client list
+                self.clients.append(client)
+
+                # start a thread to handle the communication
+                threading.Thread(target=self.handle_client, args=(client, client_address)).start()
+            
+            except KeyboardInterrupt:
+                logging.info("server stopped by the administrator.")
+                running_server = False
+

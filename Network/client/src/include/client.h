@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <stdarg.h>
-#include <math.h>
+#include <time.h>
 
 /**
  * Address of the client.
@@ -33,7 +33,6 @@
 #define MAX_MESSAGE_LENGTH 700
 
 #define REGISTRATION "F-BXNX"
-
 
 /**
  * Function that converts an int to a str for formatting the request to the server.

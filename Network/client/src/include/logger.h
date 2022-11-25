@@ -7,7 +7,7 @@
 /**
  * The path of the file to save data in.
  */
-#define LOG_FILE_PATH "logs.txt"
+#define LOG_FILE_PATH "debug.log"
 
 /**
  * The max size of a log message.

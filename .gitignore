@@ -9,6 +9,6 @@ venv
 
 # FILES
 .env
-logs.*
+debug.log
 docs/.$schema_ea.drawio.bkp
 temp.*

@@ -2,10 +2,11 @@ import psycopg2 as psql
 import logging
 import config
 
+
 class Database:
     def __init__(self, db_config: dict[str, str | None]) -> None:
         """ Constructor of the Database class.
-        
+
         @param db_config the configuration of the database.
         the configuration for the postgreSQL must be like the following example :
 
@@ -18,11 +19,13 @@ class Database:
         }
         """
         logging.basicConfig(
-            filename=config.LOGGING_FILE,
-            filemode='a',
             format='%(asctime)s - %(levelname)s - Database: %(message)s',
-            datefmt='%m/%d/%Y %I:%M:%S %p',
-            level=config.LOGGING_LEVEL
+            datefmt='%m/%d/%Y %H:%M:%S',
+            level=config.LOGGING_LEVEL,
+            handlers=[
+                logging.FileHandler(config.LOGGING_FILE),
+                logging.StreamHandler()
+            ]
         )
         # create the connection string for the connection to the postgreSQL
         self.connection_string: str = f"host={db_config.get('HOST')} port={db_config.get('PORT')} dbname={db_config.get('DBNAME')} user={db_config.get('USER')} password={db_config.get('PASSWORD')}"
@@ -39,42 +42,45 @@ class Database:
         connection.close()
         return res
 
+    def check_for_locker_open(self, registration: str, user_id: str) -> tuple or None:
+        """! Get the flight for a specific aircraft and user depending on the date.
+
+        @param registration the aircraft registration.
+        @param user_id the ID of the user.
+        @return the informations about the flight.
+        """
+        connection: psql.connection = psql.connect(self.connection_string)
+        cursor: psql.cursor = connection.cursor()
+        cursor.execute(f"SELECT ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic,((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME))AND (a.registration = '{registration}')AND(flight_date = CURRENT_DATE)) ={user_id})  AS is_flight_scheduled FROM users AS u WHERE u.user_id = {user_id};")
+        res: tuple = cursor.fetchone()
+        cursor.close()
+        connection.close()
+        return res
+
     def get_flight(self, registration: str, pilot_id: str) -> tuple or None:
         """! Get the flight for a specific aircraft and user depending on the date.
-        @param registration the aircraft registration
-        @param user_id the ID of the user
+
+        @param registration the aircraft registration.
+        @param user_id the ID of the user.
         @return the informations about the flight.
         """
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM flights WHERE (pilot_id={pilot_id} AND aircraft_reg='{registration}');")
+        
+        cursor.execute(f"SELECT f.flight_id, f.end_time, a.parking, u.first_name, u.last_name FROM pilots AS p JOIN flights AS f  ON p.pilot_id = f.pilot_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration LEFT JOIN lessons AS l ON f.flight_id = l.flight_id LEFT JOIN users AS u ON l.fi_id = u.user_id WHERE (p.pilot_id = {pilot_id})AND(f.aircraft_reg = '{registration}') AND (f.flight_date = CURRENT_DATE) AND NOT EXISTS(SELECT  o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND o.op_date > CURRENT_DATE);")
         res: tuple = cursor.fetchone()
         cursor.close()
         connection.close()
         return res
-
-    def get_flight_from_id(self, flight_id: str) -> tuple or None:
-        """! Get the flight for a specific aircraft and user depending on the date.
-        @param registration the aircraft registration
-        @param user_id the ID of the user
-        @return the informations about the flight.
-        """
+    
+    def set_flight_progress(self, flight_id: int, status: bool = True) -> None:
         connection: psql.connection = psql.connect(self.connection_string)
         cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM flights WHERE (flight_id={flight_id});")
-        res: tuple = cursor.fetchone()
+        logging.debug(f"setting the flight {flight_id} progress to {status}")
+        if (status):
+            cursor.execute(f"UPDATE flights SET in_progress = true WHERE (flight_id={flight_id});")
+        else:
+            cursor.execute(f"UPDATE flights SET in_progress = false WHERE (flight_id = {flight_id});")
+        connection.commit()
         cursor.close()
         connection.close()
-        return res
-
-    def get_mechanic(self, user_id: str) -> tuple or None:
-        """
-        @param user_id the ID of the mechanic
-        """
-        connection: psql.connection = psql.connect(self.connection_string)
-        cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT * FROM users AS u JOIN mechanics AS m ON (u.user_id = m.mechanic_id);")
-        res: tuple = cursor.fetchone()
-        cursor.close()
-        connection.close()
-        return res
