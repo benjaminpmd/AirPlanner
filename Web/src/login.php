@@ -17,8 +17,8 @@ include_once "./include/utils.inc.php";
             >
                 <label class="text-center mt-2 text-red-600 dark:text-red-500">
                 <?php
-                    if (!$valid_credentials) {
-                        echo "\t\t\t\t\tIdentifiant ou mot de passe incorrect.\n";
+                    if ($login_message != "") {
+                        echo "\t\t\t\t\t$login_message\n";
                     }
                 ?>
                 </label>
@@ -71,8 +71,8 @@ include_once "./include/utils.inc.php";
             >
             <label class="text-center mt-2 text-xl">
                 <?php
-                if (isset($password_reset) && !empty($password_reset) && $password_reset) {
-                    echo $password_reset;
+                if (isset($password_reset_message) && !empty($password_reset_message) && $password_reset_message) {
+                    echo $password_reset_message;
                 }
                 ?>
             </label>

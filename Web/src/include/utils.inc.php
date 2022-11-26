@@ -60,6 +60,13 @@ function get_routes(): array {
             "not_logged" => false,
         ],
         [
+            "title" => "Saisie de vol",
+            "ref"   => "/record.php",
+            "header" => true,
+            "logged" => true,
+            "not_logged" => false,
+        ],
+        [
             "title" => "Mon compte",
             "ref"   => "/account.php",
             "header" => true,

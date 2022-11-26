@@ -18,6 +18,7 @@ include_once './include/utils.inc.php';
         <ul>
           <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL; ?>">Accueil</a></li>
           <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/booking.php"; ?>">Réservation</a></li>
+          <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/record.php"; ?>">Saisie de vol</a></li>
           <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/account.php"; ?>">Compte</a></li>
           <li><a class="md:hover:text-blue-800 dark:md:hover:text-blue-300 transition duration-300 ease-in-out" href="<?php echo WEBSITE_URL . "/about.php"; ?>">A propos</a></li>
         </ul>

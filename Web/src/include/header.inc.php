@@ -5,17 +5,13 @@ include_once "./include/utils.inc.php";
 include_once "./classes/Session.class.php";
 include_once "./classes/User.class.php";
 
-// checking if credentials are valid
-$user = new User();
-$session = new Session();
-
-$valid_credentials = $user->login();
+$login_message = $session->login();
 
 $session->disconnect();
 
-$password_reset = $user->reset_password();
+$password_reset_message = $session->reset_password();
 
-$register_status = $user->register();
+$register_message = $session->register();
 
 $is_logged = $session->is_logged();
 

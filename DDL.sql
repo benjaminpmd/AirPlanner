@@ -127,8 +127,10 @@ CREATE table flight_records(
     arrival CHAR(4) NOT NULL,
     arrival_counter FLOAT NOT NULL,
     movements INT NOT NULL,
-    flight_time TIME NOT NULL,
-    added_fuel INT NOT NULL,
+    flight_time FLOAT NOT NULL,
+    added_fuel INT,
+    flight_description VARCHAR(100),
+    CONSTRAINT flight_fk FOREIGN KEY (flight_id) REFERENCES flights(flight_id),
     CONSTRAINT valid_counter CHECK (departure_counter < arrival_counter),
     CONSTRAINT valid_movements CHECK (movements >= 2),
     CONSTRAINT flight_rec_pk PRIMARY KEY(flight_id)

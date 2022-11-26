@@ -6,7 +6,7 @@ $page_canonical = "/book.php";
 include "./include/header.inc.php";
 
 if ($session->is_logged() && $user->is_pilot()) {
-    include "./include/booking.inc.php";
+    include "./include/book.inc.php";
 }
 else {
     include "./include/connection.inc.php";

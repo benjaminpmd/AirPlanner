@@ -16,8 +16,8 @@ include "./include/header.inc.php";
         <form action="/register.php" method="post" class="flex flex-col text-left rounded-xl max-w-xl m-auto p-5 bg-gray-200 dark:bg-gray-700">
           <label class="text-center mt-2 text-xl">
             <?php
-            if ($register_status) {
-              echo $register_status;
+            if ($register_message) {
+              echo $register_message;
             }
             ?>
           </label>
