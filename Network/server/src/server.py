@@ -1,7 +1,6 @@
 import socket
 import threading
 import logging
-import requests
 import config
 
 from db import Database
