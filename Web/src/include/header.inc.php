@@ -86,8 +86,8 @@ if (!isset($page_canonical) || empty($page_canonical)) {
     <div class="top-0 z-40 flex-none mx-auto w-full">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">
         <div class="flex justify-between">
-          <a class="flex" href="/">
-            <span class="self-center flex ml-2 text-2xl font-extrabold text-gray-900 whitespace-nowrap dark:text-white"><img src="/img/favicon.ico" class="w-9 h-9" alt="AirPlanner logo" /><?php echo WEBSITE_NAME; ?></span>
+          <a class="flex items-center" href="/">
+            <span class="self-center flex ml-2 text-2xl font-extrabold text-gray-900 whitespace-nowrap dark:text-white items-center"><img src="/img/favicon.ico" class="w-9 h-9 items-center" alt="AirPlanner logo" /><?php echo WEBSITE_NAME; ?></span>
           </a>
           <div class="flex items-center md:hidden">
             <button class="rounded-full text-sm p-4 inline-flex items-center" data-aw-toggle-color-scheme>

@@ -4,7 +4,7 @@ include "./include/functions.inc.php";
 $aircrafts = get_aircrafts();
 $instructors = get_instructors();
 ?>
-<section class="mx-10 md:m-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
+<section class="mx-8 md:m-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
   <h2 class="text-center text-2xl">Flotte</h2>
   <table class="m-auto">
     <thead>
@@ -51,7 +51,7 @@ $instructors = get_instructors();
   </table>
 </section>
 
-<section class="m-10 md:mx-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
+<section class="m-8 md:mx-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
   <h2 class="text-center text-2xl">Instructeurs</h2>
   <table class="m-auto">
     <thead>
