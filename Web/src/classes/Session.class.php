@@ -194,6 +194,11 @@ class Session {
     // in the case of the email unused
     if (!$email_already_used) {
       
+      if (!is_numeric($_POST["register-phone"])) {
+        pg_close($connection);
+        return "Téléphone incorrect, assurez vous qu'il soit de la forme 0102030405.";
+      }
+
       // create the new user
       pg_query($connection, $new_user_query);
       
