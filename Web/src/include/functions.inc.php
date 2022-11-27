@@ -285,11 +285,16 @@ function complete_operation(): string {
       $query = "UPDATE operations SET op_date=CURRENT_DATE WHERE aircraft_reg='".$_GET["registration"]."';";
     }
 
+    $aircraft_update_query = "UPDATE aircrafts SET flight_potential=50 WHERE registration='".$_GET["registration"]."';";
+
     // connect to the db
     $connection = pg_connect(CONNECTION_STRING);
   
     // execute the query
     pg_query($connection, $query);
+
+    // execute the query
+    pg_query($connection, $aircraft_update_query);
   
     // close the connection
     pg_close($connection);
