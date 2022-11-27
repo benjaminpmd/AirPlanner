@@ -12,3 +12,4 @@ venv
 debug.log
 docs/.$schema_ea.drawio.bkp
 temp.*
+docs/.$*
