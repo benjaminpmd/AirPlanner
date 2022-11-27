@@ -27,7 +27,7 @@ $operations = get_operations($user->get_user_id());
     <h3 class="text-xl">Prévoir une nouvelle opération</h3>
     <form>
       <input type="hidden" name="type" value="new-operation" />
-      <select name="registration" class="p-2 m-2 rounded-full border-2 border-gray-500 dark:border-gray-500 hover:border-gray-600 hover:dark:border-gray-400 bg-gray-300 dark:bg-gray-600 hover:bg-gray-400 dark:hover:bg-gray-500 duration-300 outline-none">
+      <select name="registration" class="input-value">
         <?php
         foreach($aircrafts as $key => $aircraft) {
           $in_service = true;
@@ -42,7 +42,7 @@ $operations = get_operations($user->get_user_id());
         ?>
       </select>
 
-      <input type="submit" value="Bloquer l'appareil" class="p-2 m-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600 cursor-pointer" />
+      <input type="submit" value="Bloquer l'appareil" class="input-submit" />
     </form>
   </article>
 </section>

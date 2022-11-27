@@ -2,6 +2,7 @@
 $page_title = "Portail de réservation";
 $page_date = "23 Octobre 2022";
 $page_canonical = "/booking.php";
+$bg_path = "/img/booking_bg.jpg";
 
 include "./include/header.inc.php";
 

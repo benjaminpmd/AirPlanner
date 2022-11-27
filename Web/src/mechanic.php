@@ -2,6 +2,7 @@
 $page_title = "Portail Mécanicien";
 $page_date = "26 Novembre 2022";
 $page_canonical = "/mechanic.php";
+$bg_path = "/img/mechanic_bg.jpg";
 
 include "./include/header.inc.php";
 

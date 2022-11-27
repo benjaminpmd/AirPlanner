@@ -80,12 +80,43 @@ function get_instructors(): array {
 }
 
 /**
- * Get all ongoing operations.
+ * Get all ongoing operations for a mechanic.
  * 
  * @return array of operation data.
  */
 function get_operations(string $mechanic_id): array {
   $query = "SELECT * FROM operations WHERE mechanic_id = $mechanic_id AND (op_date IS NULL OR op_date > CURRENT_DATE);";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // get the array containing all the data
+  $result_array = pg_fetch_all($result);
+
+  // free the result
+  pg_free_result($result);
+
+  // close the connection
+  pg_close($connection);
+
+  // if the result array is null return an empty array
+  if (!$result_array) {
+    return [];
+  }
+  // return the resulting array
+  return $result_array;
+}
+
+/**
+ * Get all ongoing operations.
+ * 
+ * @return array of operation data.
+ */
+function get_all_operations(): array {
+  $query = "SELECT aircraft_reg FROM operations;";
 
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
@@ -128,6 +159,40 @@ function get_current_flight(string $pilot_id): array {
 
   // get the array containing all the data
   $result_array = pg_fetch_array($result);
+
+  // free the result
+  pg_free_result($result);
+
+  // close the connection
+  pg_close($connection);
+
+  // if the result array is null return an empty array
+  if (!$result_array) {
+    return [];
+  }
+  // return the resulting array
+  return $result_array;
+}
+
+/**
+ * Get the flights of an aircraft for a specific date.
+ * 
+ * @param string $date selected to check for the flights.
+ * @param string $registration the registration of the aircraft.
+ * @return array containing flights details.
+ */
+function get_flights_per_date(string $date, string $registration): array {
+  // create the query
+  $query = "SELECT * FROM flights WHERE flight_date='$date' AND aircraft_reg='$registration';";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // get the array containing all the data
+  $result_array = pg_fetch_all($result);
 
   // free the result
   pg_free_result($result);
@@ -326,4 +391,157 @@ function create_operation(string $user_id): string {
     return $_GET["registration"]." a été retiré du service";
   }
   else return "";
+}
+
+/**
+ * Get aircrafts that can be book by a pilot given its qualifications.
+ * 
+ * @param
+ */
+function get_allowed_aicrafts(string $user_id): array {
+  $query = "SELECT a.registration,
+  CASE
+      WHEN ((SELECT p.vpp_qualified FROM pilots AS p 
+          WHERE p.pilot_id = $user_id)= TRUE) THEN TRUE
+      WHEN ((SELECT p.vpp_qualified FROM pilots AS p 
+          WHERE p.pilot_id = $user_id)= FALSE) THEN FALSE
+  END AS vpp_qualification,
+  CASE
+      WHEN ((SELECT p.rg_qualified FROM pilots AS p 
+          WHERE p.pilot_id = $user_id)= TRUE) THEN TRUE
+      WHEN ((SELECT p.rg_qualified FROM pilots AS p 
+          WHERE p.pilot_id = $user_id)= FALSE) THEN FALSE
+  END AS rg_qualification
+  
+  FROM aircrafts AS a
+  WHERE (
+          ( 
+              (((SELECT p.rg_qualified FROM pilots AS p 
+                  WHERE p.pilot_id = $user_id) = TRUE)
+                  AND(a.has_rg = TRUE OR a.has_rg = FALSE))
+          OR
+              (((SELECT p.rg_qualified FROM pilots AS p 
+                  WHERE p.pilot_id = $user_id)= FALSE)
+                  AND(a.has_rg = FALSE)))
+  AND
+          (
+              (((SELECT p.vpp_qualified FROM pilots AS p 
+                  WHERE p.pilot_id = $user_id)= TRUE)
+                  AND(a.has_vpp = TRUE OR a.has_vpp = FALSE))
+          OR
+              (((SELECT p.vpp_qualified FROM pilots AS p 
+                  WHERE p.pilot_id = $user_id)= FALSE)
+                  AND(a.has_vpp = FALSE))
+          )
+  );";
+
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // get the array containing all the data
+  $result_array = pg_fetch_all($result);
+
+  // free the result
+  pg_free_result($result);
+
+  // close the connection
+  pg_close($connection);
+
+  // if the result array is null return an empty array
+  if (!$result_array) {
+    return [];
+  }
+  // return the resulting array
+  return $result_array;
+}
+
+function get_available_fi(string $flight_date, string $start_time, string $end_time) {
+  $query = "SELECT DISTINCT i.fi_id, i.fi_code
+  FROM (SELECT f.flight_id,f.flight_date, f.start_time, f.end_time, fi_id 
+      FROM flights AS f 
+      JOIN lessons AS l ON f.flight_id = l.flight_id
+      UNION 
+      SELECT f.flight_id, f.flight_date,f.start_time,f.end_time, pilot_id AS fi_id
+      FROM flights AS f 
+      JOIN instructors AS i ON f.pilot_id = i.fi_id) AS r
+  RIGHT JOIN instructors AS i ON r.fi_id = i.fi_id
+  WHERE flight_date='$flight_date' AND ((r.start_time < '$start_time')AND(r.end_time < '$start_time')) 
+  OR ((r.start_time > '$end_time')AND(r.end_time>'$end_time'))
+  OR ((r.start_time IS NULL)AND(r.end_time IS NULL));";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // get the array containing all the data
+  $result_array = pg_fetch_all($result);
+
+  // free the result
+  pg_free_result($result);
+
+  // close the connection
+  pg_close($connection);
+
+  // if the result array is null return an empty array
+  if (!$result_array) {
+    return [];
+  }
+  // return the resulting array
+  return $result_array;
+}
+
+function book_flight(User $user) {
+  $pilot_data = $user->get_pilot_data();
+
+  if (intval($pilot_data["balance"]) < 0) {
+    return "Erreur, votre solde est inférieur à 0";
+  };
+  if ($pilot_data["contribution_date"] < date('Y-m-d', strtotime('-1 year'))) {
+    return "Erreur, votre contribution club n'est pas à jours";
+  }
+
+  $is_lesson = ($_GET["is-lesson"] == 'on');
+  
+  if (!$is_lesson && $user->is_student()) {
+    return "Erreur, vous devez effectuer une réservation avec instructeur";
+  }
+
+  $query = "INSERT INTO flights(aircraft_reg, pilot_id, flight_date, start_time, end_time) VALUES ('".$_GET["registration"]."', ".$user->get_user_id().", '".$_GET["date"]."', '".$_GET["start-time"]."', '".$_GET["end-time"]."');";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute the query
+  pg_query($connection, $query);
+
+  if ($is_lesson) {
+    
+    $query = "SELECT flight_id FROM flights WHERE flight_date='".$_GET["date"]."' AND start_time='".$_GET["start-time"]."' AND end_time='".$_GET["end-time"]."';";
+    
+    // execute and get the result of the query
+    $result = pg_query($connection, $query);
+
+    // get the array containing all the data
+    $result_array = pg_fetch_array($result);
+
+    // free the result
+    pg_free_result($result);
+
+    $query = "INSERT INTO lessons(flight_id, fi_id, objective) VALUES (".$result_array["flight_id"].", ".$_GET["fi-id"].", '".'test'."');";
+
+    // execute the query
+    pg_query($connection, $query);
+
+  }
+
+  // close the connection
+  pg_close($connection);
+
+  return "Votre réservation a bien été prise en compte";
 }

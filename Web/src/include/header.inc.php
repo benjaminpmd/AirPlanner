@@ -9,9 +9,9 @@ $login_message = $session->login();
 
 $session->disconnect();
 
-$password_reset_message = $session->reset_password();
+$password_reset_message = $user->reset_password();
 
-$register_message = $session->register();
+$register_message = $user->register();
 
 $is_logged = $session->is_logged();
 
@@ -81,7 +81,7 @@ if (!isset($page_canonical) || empty($page_canonical)) {
   <link href="./css/global.css" rel="stylesheet" />
 </head>
 
-<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image: url('/img/home_bg.jpg');">
+<body class="font-sans bg-gray-50 dark:bg-gray-800 text-black dark:text-white antialiased bg-cover" style="background-image:  url('<?php if(isset($bg_path)) echo $bg_path; else echo "/img/home_bg.jpg"; ?>');">
   <header class="bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out">
     <div class="top-0 z-40 flex-none mx-auto w-full">
       <div class="mx-auto w-full md:flex md:justify-between backdrop-blur bg-gray-400/70 dark:bg-gray-900">

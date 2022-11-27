@@ -1,8 +1,11 @@
 <?php
 include "./include/functions.inc.php";
+include_once "./classes/User.class.php";
 
+$avaiable = get_allowed_aicrafts($user->get_user_id());
 $aircrafts = get_aircrafts();
 $instructors = get_instructors();
+$operations = get_all_operations();
 ?>
 <section class="mx-8 md:m-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
   <h2 class="text-center text-2xl">Flotte</h2>
