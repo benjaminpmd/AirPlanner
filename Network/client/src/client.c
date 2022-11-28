@@ -109,8 +109,17 @@ void lockerCommunication(int socket) {
 		printf("%s\n", buffer);
 	}
 	else {
-		// else, do not open the locker
-		printf("Aucun vol n'est enregistré pour l'appareil %s avec cet ID.\n", REGISTRATION);
+		// code 2 means that the user is a pilot with a scheduled flight
+		printf("Le casier de l'appareil %s ne peut pas être ouvert\n", REGISTRATION);
+		
+		// create the command and save it into the buffer
+		setMessage(buffer, 3, "locker-reason", REGISTRATION, userId);
+    	// send the buffer to the server
+		sendMessage(socket, buffer);
+		// read the response from the server
+		readMessage(socket, buffer);
+		// print the information sent by the server, should be indications about the flight
+		printf("%s\n", buffer);
 	}
 
 	// close the connection

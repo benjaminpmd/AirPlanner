@@ -35,14 +35,33 @@ class Database:
 
         @param registration the aircraft registration.
         @param user_id the ID of the user.
-        @return the informations about the flight.
+        @return a tuple containing (if the aircraft is in maintenance, if the user is a mechanic, if the user is a pilot with a scheduled flight).
         """
-        connection: psql.connection = psql.connect(self.connection_string)
-        cursor: psql.cursor = connection.cursor()
-        cursor.execute(f"SELECT ((SELECT o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND ((o.op_date > CURRENT_DATE) OR (o.op_date IS NULL)))='{registration}') as unavailable, ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic,((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME))AND (a.registration = '{registration}')AND(flight_date = CURRENT_DATE)) ={user_id}) AS is_flight_scheduled FROM users AS u WHERE u.user_id = {user_id};")
-        res: tuple = cursor.fetchone()
-        cursor.close()
-        connection.close()
+        # init the result
+        res: tuple = None
+        try:
+            # connecting to the database
+            connection: psql.connection = psql.connect(self.connection_string)
+
+            # fetching the cursor
+            cursor: psql.cursor = connection.cursor()
+
+            # executing the request
+            cursor.execute(f"SELECT ((SELECT o.aircraft_reg FROM operations AS o WHERE o.aircraft_reg = '{registration}' AND ((o.op_date > CURRENT_DATE) OR (o.op_date IS NULL)))='{registration}') as unavailable, ((SELECT user_id FROM users AS u JOIN mechanics AS m ON u.user_id = m.mechanic_id WHERE m.mechanic_id = {user_id})={user_id}) AS is_mechanic,((SELECT DISTINCT f.pilot_id FROM flights AS f JOIN (SELECT f.flight_id FROM flights AS f LEFT JOIN lessons AS l ON f.flight_id = l.flight_id WHERE (f.pilot_id = {user_id})) AS m ON f.flight_id = m.flight_id JOIN aircrafts AS a ON f.aircraft_reg = a.registration WHERE ((f.start_time <= CURRENT_TIME)AND(f.end_time >= CURRENT_TIME))AND (a.registration = '{registration}')AND(flight_date = CURRENT_DATE)) ={user_id}) AS is_flight_scheduled FROM users AS u WHERE u.user_id = {user_id};")
+            
+            # fetch the result
+            res = cursor.fetchone()
+
+            # close the cursor
+            cursor.close()
+
+            # close the connection
+            connection.close()
+        except Exception as e:
+            # in case we could no connect to the database
+            logging.error(f"request on database could not be completed: {e}")
+
+        # return the result
         return res
 
     def check_for_door_open(self, parking: str, user_id: str):

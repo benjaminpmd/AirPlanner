@@ -260,6 +260,7 @@ class User
         pg_close($connection);
         return "Téléphone incorrect, assurez vous qu'il soit de la forme 0102030405.";
       }
+      // CHECK FOR PHONE LENGTH
 
       // create the new user
       pg_query($connection, $new_user_query);
