@@ -30,6 +30,11 @@
 #define PORT 1024
 
 /**
+ * time out value used for communications
+*/
+#define DEFAULT_TIMEOUT 20
+
+/**
  * Max length of output/input message.
  */
 #define MAX_MESSAGE_LENGTH 500

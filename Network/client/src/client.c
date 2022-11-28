@@ -41,7 +41,7 @@ void setMessage(char *buffer, int argc, ...) {
 void sendMessage(int socket, char *buffer) {  
 	// setup the timeout
 	struct timeval timeout;
-	timeout.tv_sec = 20;
+	timeout.tv_sec = DEFAULT_TIMEOUT;
 	timeout.tv_usec = 0; 
     
 	// set the timeout
@@ -69,7 +69,7 @@ void sendMessage(int socket, char *buffer) {
 void readMessage(int socket, char *buffer) {
 	// setup the timeout
 	struct timeval timeout;      
-    timeout.tv_sec = 20;
+    timeout.tv_sec = DEFAULT_TIMEOUT;
     timeout.tv_usec = 0;
 
 	// reset the buffer to its original size

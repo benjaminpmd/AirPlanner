@@ -9,7 +9,7 @@ $pilot_data = $user->get_pilot_data();
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-14 md:mx-20">
     <article class="flex flex-col text-left rounded-xl w-full p-5 bg-gray-200 dark:bg-gray-700">
       <h3 class="text-center text-xl p-2">Mes informations personnelles</h3>
-      <form action="/account.php" method="post" class="flex flex-col text-left">
+      <form action="/account.php" method="GET" class="flex flex-col text-left">
 
         <label class="input-label">Prénom</label>
         <input type="text" name="user-firstname" value="<?php echo $user->get_first_name(); ?>" class="input-value" />
@@ -56,10 +56,10 @@ $pilot_data = $user->get_pilot_data();
       <?php 
       if (!$pilot_data["rib"]) {
         echo "<p class=\"text-red-600 dark:text-red-400 text-center\">Veuillez fournir un rib afin de pouvoir alimenter votre compte en ligne</p>\n";
-        echo '<form action="/account.php" method="post" class="flex flex-col text-left"><label class="input-label">Ajouter un RIB</label><input type="text" name="add-rib" class="input-value" /><input type="submit" class="cursor-pointer mx-2 mt-4 p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600" value="Confirmer le RIB" /></form>';
+        echo '<form action="/account.php" method="POST" class="flex flex-col text-left"><label class="input-label">Ajouter un RIB</label><input type="text" name="add-rib" class="input-value" /><input type="submit" class="cursor-pointer mx-2 mt-4 p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600" value="Confirmer le RIB" /></form>';
       }
       else {
-        echo '<form action="/account.php" method="post" class="flex flex-col text-left"><label class="input-label">Montant à recharger</label><input type="number" min="1" name="recharge-amount" class="input-value" /><input type="submit" class="cursor-pointer mx-2 mt-4 p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600" value="Payer" /></form>';
+        echo '<form action="/account.php" method="POST" class="flex flex-col text-left"><label class="input-label">Montant à recharger</label><input type="number" min="1" name="recharge-amount" class="input-value" /><input type="submit" class="cursor-pointer mx-2 mt-4 p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600" value="Payer" /></form>';
       }
       ?>
     </article>

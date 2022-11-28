@@ -308,7 +308,7 @@ class Server:
                                 client.send("L'appareil demandé est actuellement en maintenance".encode("utf8"))
                             
                             else:
-                                client.send("Aucun vol n'est actuellement prévu pour votre ID pour cet appareil.")
+                                client.send("Aucun vol n'est actuellement prévu pour votre ID pour cet appareil.".encode("utf8"))
                         else:
                             logging.warning(f"Forced end of communication at door message request due to database error")
                             self.close_client(client, address, self.error_db)

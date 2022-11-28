@@ -256,7 +256,7 @@ class User
     // in the case of the email unused
     if (!$email_already_used) {
       
-      if (!is_numeric($_POST["register-phone"])) {
+      if (!is_numeric($_POST["register-phone"]) || (strlen($_POST["register-phone"]) != 10)) {
         pg_close($connection);
         return "Téléphone incorrect, assurez vous qu'il soit de la forme 0102030405.";
       }
