@@ -48,10 +48,10 @@ int main(int argc, char const *argv[]) {
             printf("Sélectionnez le système à utiliser\n    (1) le lecteur de carte pour casier\n    (2) le lecteur de carte pour portique hangar\nEntrez votre selection: ");
             scanf("%d", &selection);
             if (selection == 1) {
-                lockerCommunication(socketClient);
+                lockerSequence(socketClient);
             }
             else if (selection == 2) {
-                hangarCommunication(socketClient);
+                hangarSequence(socketClient);
             }
 
             if ((selection != 1) && (selection != 2)) {

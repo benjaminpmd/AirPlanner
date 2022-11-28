@@ -22,18 +22,26 @@
 /**
  * Address of the client.
  */
-#define ADDRESS "192.168.3.137"
+#define ADDRESS "127.0.0.1"
+
 /**
  * Port on which the server is running.
  */
-#define PORT 1025
+#define PORT 1024
+
 /**
  * Max length of output/input message.
  */
-#define MAX_MESSAGE_LENGTH 700
+#define MAX_MESSAGE_LENGTH 500
 
+/**
+ * The registration of the aircraft associated to the locker
+*/
 #define REGISTRATION "F-BXNX"
 
+/**
+ * The parking number (string) associated to the door
+*/
 #define PARKING "1"
 
 /**
@@ -62,7 +70,7 @@ void sendMessage(int socket, char *buffer);
 
 /**
  * Function that read a message from the server.
- * ## TODO: Finishing doc
+ * 
  * @param socket the socket of the client.
  * @param buffer the message buffer to use.
 */
@@ -73,8 +81,13 @@ void readMessage(int socket, char *buffer);
  * 
  * @param socket the client socket.
  */
-void lockerCommunication(int socket);
+void lockerSequence(int socket);
 
-void hangarCommunication(int socket);
+/**
+ * Procedure that communicate with the server as a door checking system.
+ * 
+ * @param socket the client socket.
+ */
+void hangarSequence(int socket);
 
 #endif

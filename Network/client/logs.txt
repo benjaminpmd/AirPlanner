@@ -1,3 +1,0 @@
-28/11/2022 09:36:04 - DEBUG - Client: Connecting using input address
-28/11/2022 09:36:04 - DEBUG - Client: Connecting using input port
-28/11/2022 09:36:04 - INFO - Client: connection successful
