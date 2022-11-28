@@ -13,7 +13,7 @@ include "./include/header.inc.php";
   <p>Ce site étant un projet réalisé dans un cadre universitaire, les services offerts restent fictifs. Les auteurs d'AirPlanner ne peuvent être tenu responsable de tout usage déplacé des services simulés.</p>
 
   <h3 class="text-center text-2xl p-5">Confidentialité</h3>
-  <p>AirPlanner protège vos données entrées sur le site. Veuillez consulter <a href="<?php echo WEBSITE_URL . "/privacy-policy.php"; ?>">la politique de confidentialité</a>
+  <p>AirPlanner protège vos données entrées sur le site. Veuillez consulter <a class="underline" href="<?php echo WEBSITE_URL . "/privacy-policy.php"; ?>">la politique de confidentialité</a>
     pour plus d'informations concernant nos termes de confidentialité</p>
 
   <h3 class="text-center text-2xl p-5">Propriété intellectuelle</h3>
