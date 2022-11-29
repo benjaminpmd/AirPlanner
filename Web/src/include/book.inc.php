@@ -35,7 +35,7 @@ if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] ==
 ?>
 
 <section class="mx-8 mb-10 md:mx-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
-    <h2 class="text-center text-2xl">Voir les créneaux</h2>
+    <h2 class="text-center text-2xl">Voir les créneaux réservés</h2>
     <?php if($message_flights) echo "<p class=\"text-center p-3\">$message_flights</p>\n"; ?>
     <form action="/book.php" method="GET" class="text-center">
         <input type="hidden" name="type" value="check-flights">
@@ -55,7 +55,7 @@ if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] ==
         <input type="submit" value="voir les créneaux" class="input-submit" />
     </form>
     <article>
-        <h3 class="text-center text-xl">Créneaux de vol</h3>
+        <h3 class="text-center text-xl">Créneaux de vol réservés</h3>
 
         <table class="w-full rounded-xl text-center border-2 border-slate-400 dark:border-slate-500">
             <thead class="w-full border-b-2 border-slate-400 dark:border-slate-500"><tr><th>Début</th><th>Fin</th><th>Annuler</th></tr></thead>
@@ -77,7 +77,7 @@ if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] ==
     </article>
 </section>
 
-<section class="mx-8 mb-10 md:mx-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
+<section class="mx-8 md:mx-auto md:max-w-3xl p-5 rounded-xl items-center object-center bg-gray-200 dark:bg-gray-700">
     <h2 class="text-center text-2xl">Réserver</h2>
     <?php if($message_book) echo "<p class=\"text-center p-3\">$message_book</p>\n"; ?>
     <form action="/book.php" method="GET" class="text-center grid grid-cols-1 md:grid-cols-4">
