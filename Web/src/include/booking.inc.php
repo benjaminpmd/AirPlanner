@@ -90,8 +90,8 @@ $operations = get_all_operations();
                         <td class=\"p-2\">
                             <a 
                             class=\"p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600\"
-                            href=\"book.php?fi_code=" . $instructor["fi_code"] . "\">
-                                Prendre rendez-vous
+                            href=\"book.php?fi-code=" . $instructor["fi_code"] . "&is-lesson=on\">
+                                Rendez-vous
                             </a>
                         </td>
                     </tr>\n";

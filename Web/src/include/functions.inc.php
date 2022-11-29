@@ -543,7 +543,8 @@ function book_flight(User $user) {
   // execute the query
   $res = pg_query($connection, $valid_times_query);
 
-  if (pg_fetch_array($res)) {
+  $res_array = pg_fetch_array($res);
+  if (!$res_array || ($res_array[0] != "f")) {
     // close the connection
     pg_close($connection);
     return "Le créneau sélectionné est incorrect";
