@@ -40,7 +40,7 @@ class Session {
    * 
    * @return boolean value indicating if the credentials are correct or not.
    */
-  function login(): bool {
+  function login(): string {
     
     // checking if credentials are passed as post
     if ((isset($_POST["login-email"]) && !empty($_POST["login-email"])) && (isset($_POST["login-password"]) && !empty($_POST["login-password"]))) {

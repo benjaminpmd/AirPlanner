@@ -9,6 +9,7 @@ from db import Database
 class Server:
     def __init__(self, database_config: dict, address: str = '', port: int = 1024) -> None:
         """! Constructor of the server class.
+        This class contains the complete server.
 
         @param database_config the configuration for the postgreSQL. For more information, please refer to the Database class.
         @param address the address of the server, by default: ''.
@@ -39,6 +40,7 @@ class Server:
 
     def close_client(self, client: socket, address: tuple, command: str = "closing-connection") -> None:
         """! close a client.
+        The method tries to send the command to the client and then close the connection.
         
         @param client the socket of the client to close.
         @param address the address of the client to close.

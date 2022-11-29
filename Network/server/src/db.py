@@ -15,6 +15,7 @@ class Database:
     """
     def __init__(self, db_config: dict) -> None:
         """ Constructor of the Database class.
+        All the methods used to make request on the database are available in this class.
 
         @param db_config the configuration of the database.
         the configuration for the postgreSQL must be like the following example :
@@ -33,6 +34,7 @@ class Database:
 
     def __select(self, query: str):
         """! Method that makes a request on the database.
+        This method only perform SELECT queries and return their result.
         
         @param query the query as a string.
         @return the result of the query or null.
@@ -116,6 +118,7 @@ class Database:
     
     def set_flight_progress(self, flight_id: int, status: bool = True) -> bool:
         """! Set the status of a specific flight.
+        The methods returns an indication about wether the value has been updated or not.
         
         @param flight_id the ID of the flight.
         @param status a boolean indicating if the flight status should be true or false.

@@ -2,7 +2,7 @@
 include "./include/functions.inc.php";
 include_once "./classes/User.class.php";
 
-$avaiable = get_allowed_aicrafts($user->get_user_id());
+$allowed_aircrafts = get_allowed_aircrafts($user->get_user_id());
 $aircrafts = get_aircrafts();
 $instructors = get_instructors();
 $operations = get_all_operations();
@@ -25,6 +25,7 @@ $operations = get_all_operations();
     <tbody>
       <?php
       foreach ($aircrafts as $key => $aircraft) {
+        
         foreach ($aircraft as $key => $value) {
           if ($value == 't') {
             $aircraft[$key] = "Oui";
@@ -32,6 +33,15 @@ $operations = get_all_operations();
             $aircraft[$key] = "Non";
           }
         }
+        
+        $is_allowed = false;
+
+        foreach ($allowed_aircrafts as $key => $a_aircraft) {
+          if ($a_aircraft["registration"] == $aircraft["registration"]) {
+            $is_allowed = true;
+          }
+        }
+
         echo "<tr class=\"border-b-2 border-slate-300 dark:border-slate-600 text-center\">
                 <th class=\"p-2\">" . $aircraft["registration"] . "</th>
                 <td class=\"p-2\">" . $aircraft["aircraft_type"] . "</td>
@@ -40,14 +50,14 @@ $operations = get_all_operations();
                 <td class=\"p-0 hidden md:p-2 md:table-cell\">" . $aircraft["ifr_qualified"] . "</td>
                 <td class=\"p-0 hidden md:p-2 md:table-cell\">" . $aircraft["has_vpp"] . "</td>
                 <td class=\"p-0 hidden md:p-2 md:table-cell\">" . $aircraft["has_rg"] . "</td>
-                <td class=\"p-2\">
-                    <a 
-                    class=\"p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600\"
-                    href=\"book.php?registration=" . $aircraft["registration"] . "\">
-                        Réserver
-                    </a>
-                </td>
-              </tr>\n";
+                <td class=\"p-2\"><a class=\"p-2 rounded-full duration-300";
+        if (!$is_allowed) {
+          echo " bg-red-300 dark:bg-red-700 hover:bg-red-400 dark:hover:bg-red-600 cursor-not-allowed\" aria-disabled=\"true\"";
+        }
+        else {
+          echo " bg-sky-300 dark:bg-sky-700 hover:bg-sky-400 dark:hover:bg-sky-600\"";
+        }
+        echo " disallow href=\"book.php?registration=" . $aircraft["registration"] . "\">Réserver</a></td></tr>\n";
       }
       ?>
     </tbody>

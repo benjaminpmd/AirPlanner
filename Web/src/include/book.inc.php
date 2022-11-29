@@ -25,8 +25,11 @@ if($_GET["type"] && ($_GET["type"] == "book-flight")) {
         $message_flights = "Veuillez spécifier une date";
     }
 }
+else if ($_GET["type"] && ($_GET["type"] == "cancel-flight") && $_GET["flight-id"]) {
+    $message_flights = cancel_flight($_GET["flight-id"]);
+}
 
-if($_GET["type"] && $_GET["date"]) {
+if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] == "check-flights") || ($_GET["type"] == "book-flight"))) {
     $flights = get_flights_per_date($_GET["date"], $_GET["registration"]);
 }
 ?>
@@ -37,7 +40,7 @@ if($_GET["type"] && $_GET["date"]) {
     <form action="/book.php" method="GET" class="text-center">
         <input type="hidden" name="type" value="check-flights">
         <label>Date</label>
-        <input type="date" required name="date" class="input-value" value="<?php echo $_GET["date"] ?>" />
+        <input type="date" required name="date" class="input-value" min="<?php echo date("Y-n-j") ?>" value="<?php echo $_GET["date"] ?>" />
         <label>Appareil</label>
         <select name="registration" class="input-value">
             <?php
@@ -55,12 +58,17 @@ if($_GET["type"] && $_GET["date"]) {
         <h3 class="text-center text-xl">Créneaux de vol</h3>
 
         <table class="w-full rounded-xl text-center border-2 border-slate-400 dark:border-slate-500">
-            <thead class="w-full border-b-2 border-slate-400 dark:border-slate-500"><tr><th>Début</th><th>Fin</th><th>Leçon</th></tr></thead>
+            <thead class="w-full border-b-2 border-slate-400 dark:border-slate-500"><tr><th>Début</th><th>Fin</th><th>Annuler</th></tr></thead>
             <tbody>
             <?php
                 if ($flights) {
                     foreach($flights as $key => $flight) {
-                        echo "<tr class=\"w-full bg-sky-300 dark:bg-sky-700\"><td>".$flight["start_time"]."</td><td>".$flight["end_time"]."</td><td>"."Non"."</td></tr>";
+                        if($flight["pilot_id"] == $user->get_user_id()) {
+                            echo "<tr class=\"w-full bg-green-300 dark:bg-green-700\"><td>".$flight["start_time"]."</td><td>".$flight["end_time"]."</td><td><a class=\"underline\" href=\"/book.php?type=cancel-flight&flight-id=".$flight["flight_id"]."\">Annuler</a></td></tr>";
+                        }
+                        else {
+                            echo "<tr class=\"w-full bg-sky-300 dark:bg-sky-700\"><td>".$flight["start_time"]."</td><td>".$flight["end_time"]."</td><td></td></tr>";
+                        }
                     }
                 }
                 ?>

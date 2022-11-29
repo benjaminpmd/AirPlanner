@@ -197,7 +197,7 @@ class User
         $toAddress = $user[0];
         $toName = $user[1] . " " . $user[2];
         $subject = "Réinitialisation de votre mot de passe - " . WEBSITE_NAME;
-        $content = "<html><h2 style=\"font-size: large;\">Réinitialisation de votre mot de passe</h2>\n<h3>Bonjour " . $user[1] . " " . $user[2] . "</h3>\n<p>Vous avez demandez une réinitialisation de votre mot de passe.</p><p>Votre nouveau mot de passe est : " . $new_password . "</p>\n<p>Vous pouvez le modifier à tout moment en vous connectant sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p><img src=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr/img/favicon.ico\" alt=\"".WEBSITE_NAME." logo\" /></html>";
+        $content = "<html><h2 style=\"font-size: large;\">Réinitialisation de votre mot de passe</h2>\n<h3>Bonjour " . $user[1] . " " . $user[2] . "</h3>\n<p>Vous avez demandez une réinitialisation de votre mot de passe.</p><p>Votre nouveau mot de passe est : " . $new_password . "</p>\n<p>Rendez vous sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p><img src=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr/img/favicon.ico\" alt=\"".WEBSITE_NAME." logo\" /></html>";
         $is_sent = send_mail($toAddress, $toName, $subject, $content);
         
         // confirm to the user that a mail have been sent
@@ -260,6 +260,11 @@ class User
         pg_close($connection);
         return "Téléphone incorrect, assurez vous qu'il soit de la forme 0102030405.";
       }
+
+      if ($_POST["register-birthdate"] >= date("Y-m-d")) {
+        pg_close($connection);
+        return "Date de naissance incorrecte.";
+      }
       // CHECK FOR PHONE LENGTH
 
       // create the new user
@@ -270,7 +275,7 @@ class User
       
       // if the user exist, it means an account is associated with it
       if ($user) {
-        $new_pilot_query = "INSERT INTO pilots(pilot_id, birth_date, pilot_address, city, postal_code) VALUES (" . $user[0] . ", '" . $_POST["register-birthdate"] . "', '" . $_POST["register-address"] . "', '" . $_POST["register-city"] . "', '" . $_POST["register-postal-code"] . "');";
+        $new_pilot_query = "INSERT INTO pilots(pilot_id, birth_date, pilot_address, city, postal_code, contribution_date, medical_check_date) VALUES (" . $user[0] . ", '" . $_POST["register-birthdate"] . "', '" . $_POST["register-address"] . "', '" . $_POST["register-city"] . "', '" . $_POST["register-postal-code"] . "', CURRENT_DATE, CURRENT_DATE);";
         pg_query($connection, $new_pilot_query);
         // close the connection to the database
         pg_close(($connection));
@@ -279,7 +284,7 @@ class User
         $toAddress = $_POST["register-email"];
         $toName = $_POST["register-firstname"] . " " . $_POST["register-lastname"];
         $subject = "Bienvenue sur la plateforme " . WEBSITE_NAME;
-        $content = "<h2>Bienvenue sur la plateforme " . WEBSITE_NAME . "</h2>\n<h3>Bonjour " . $_POST["register-firstname"] . " " . $_POST["register-lastname"] . "</h3>\n<p>Votre incripstion sur la plateforme est complète !</p><p>Votre mot de passe est : " . $new_password . "</p>\n<p>Vous pouvez le modifier à tout moment en vous connectant sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p><img src=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr/img/favicon.ico\" alt=\"".WEBSITE_NAME." logo\" />";
+        $content = "<h2>Bienvenue sur la plateforme " . WEBSITE_NAME . "</h2>\n<h3>Bonjour " . $_POST["register-firstname"] . " " . $_POST["register-lastname"] . "</h3>\n<p>Votre inscription sur la plateforme est complète !</p><p>Votre mot de passe est : " . $new_password . "</p>\n<p>Pensez à fournir votre certificat médicale au secrétariat lors de votre prochaine visite.</p>\n<p>Rendez vous sur le <a href=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr\">site internet</a>.</p>\n<p></p>\n<p>Cordialement</p>\n<p>L'équipe " . WEBSITE_NAME . "</p><img src=\"https://" . WEBSITE_NAME_URL . ".benjaminpmd.fr/img/favicon.ico\" alt=\"".WEBSITE_NAME." logo\" />";
         $is_sent = send_mail($toAddress, $toName, $subject, $content);
         
         if ($is_sent) return "Un email vous a été envoyé.";

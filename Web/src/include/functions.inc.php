@@ -1,5 +1,4 @@
 <?php
-include_once "./include/utils.inc.php";
 
 /**
  * Convert a float into a time.
@@ -183,7 +182,7 @@ function get_current_flight(string $pilot_id): array {
  */
 function get_flights_per_date(string $date, string $registration): array {
   // create the query
-  $query = "SELECT * FROM flights WHERE flight_date='$date' AND aircraft_reg='$registration';";
+  $query = "SELECT * FROM flights WHERE flight_date='$date' AND aircraft_reg='$registration' ORDER BY start_time;";
 
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
@@ -396,10 +395,10 @@ function create_operation(string $user_id): string {
 /**
  * Get aircrafts that can be book by a pilot given its qualifications.
  * 
- * @param
+ * @param string $user_id the ID of the pilot.
  */
-function get_allowed_aicrafts(string $user_id): array {
-  $query = "SELECT a.registration,
+function get_allowed_aircrafts(string $user_id): array {
+  $query = "SELECT registration,
   CASE
       WHEN ((SELECT p.vpp_qualified FROM pilots AS p 
           WHERE p.pilot_id = $user_id)= TRUE) THEN TRUE
@@ -499,6 +498,9 @@ function get_available_fi(string $flight_date, string $start_time, string $end_t
 function book_flight(User $user) {
   $pilot_data = $user->get_pilot_data();
 
+
+  $allowed_aircrafts = get_allowed_aircrafts($user->get_user_id());
+
   if (intval($pilot_data["balance"]) < 0) {
     return "Erreur, votre solde est inférieur à 0";
   };
@@ -512,10 +514,42 @@ function book_flight(User $user) {
     return "Erreur, vous devez effectuer une réservation avec instructeur";
   }
 
-  $query = "INSERT INTO flights(aircraft_reg, pilot_id, flight_date, start_time, end_time) VALUES ('".$_GET["registration"]."', ".$user->get_user_id().", '".$_GET["date"]."', '".$_GET["start-time"]."', '".$_GET["end-time"]."');";
+  $is_allowed = false;
+
+  foreach ($allowed_aircrafts as $key => $aircraft) {
+    if ($aircraft["registration"] == $_GET["registration"]) {
+      $is_allowed = true;
+    }
+  }
+
+  if (!$is_allowed && !$is_lesson) {
+    return "Erreur, vous n'avez pas les qualifications requises pour réserver cet appareil";
+  }
+
+  if ($_GET["start-time"] >= $_GET["end-time"]) {
+    return "Erreur, l'heure de début ne peut pas être après l'heure de fin";
+  }
 
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
+
+  $valid_times_query = "SELECT (
+    NOT(((start_time < '".$_GET["start-time"]."')AND(end_time < '".$_GET["start-time"]."')) OR ((start_time > '".$_GET["end-time"]."')AND(end_time>'".$_GET["end-time"]."')))
+    ) AS vol_invalide
+    FROM flights
+    WHERE flight_date = '".$_GET["date"]."'
+    AND aircraft_reg = '".$_GET["registration"]."'";
+
+  // execute the query
+  $res = pg_query($connection, $valid_times_query);
+
+  if (pg_fetch_array($res)) {
+    // close the connection
+    pg_close($connection);
+    return "Le créneau sélectionné est incorrect";
+  }
+
+  $query = "INSERT INTO flights(aircraft_reg, pilot_id, flight_date, start_time, end_time) VALUES ('".$_GET["registration"]."', ".$user->get_user_id().", '".$_GET["date"]."', '".$_GET["start-time"]."', '".$_GET["end-time"]."');";
 
   // execute the query
   pg_query($connection, $query);
@@ -544,4 +578,54 @@ function book_flight(User $user) {
   pg_close($connection);
 
   return "Votre réservation a bien été prise en compte";
+}
+
+function update_balance(string $user_id, int $amount): array {
+
+  if (intval($amount) < 1) {
+    return [
+      "success" => false,
+      "message" => "La somme doit être supérieur ou égale à 1",
+      "amount" => 0
+    ];
+  }
+  // create the query
+  $query = "UPDATE pilots SET balance=balance+$amount WHERE pilot_id=$user_id;";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // close the connection
+  pg_close($connection);
+
+  // return the result message
+  return [
+    "success" => true,
+    "message" => "Compte mis à jours",
+    "amount" => $amount
+  ];
+}
+
+function cancel_flight($flight_id): string {
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+   // create the query
+   $query = "DELETE FROM lessons WHERE flight_id=$flight_id;";
+
+   // execute the query
+   pg_query($connection, $query);
+
+   $query = "DELETE FROM flights WHERE flight_id=$flight_id;";
+ 
+   // execute the query
+   pg_query($connection, $query);
+ 
+   // close the connection
+   pg_close($connection);
+
+   return "Vol annulé";
 }
