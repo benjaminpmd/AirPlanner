@@ -475,9 +475,20 @@ function get_available_fi(string $flight_date, string $start_time, string $end_t
       FROM flights AS f 
       JOIN instructors AS i ON f.pilot_id = i.fi_id) AS r
   RIGHT JOIN instructors AS i ON r.fi_id = i.fi_id
-  WHERE flight_date='$flight_date' AND ((r.start_time < '$start_time')AND(r.end_time < '$start_time')) 
+  WHERE (r.flight_date = '$flight_date')
+  AND((r.start_time < '$start_time')AND(r.end_time < '$start_time')) 
   OR ((r.start_time > '$end_time')AND(r.end_time>'$end_time'))
-  OR ((r.start_time IS NULL)AND(r.end_time IS NULL));";
+  OR ((r.start_time IS NULL)AND(r.end_time IS NULL))
+  OR NOT EXISTS(SELECT * 
+                  FROM (SELECT f.flight_id,f.flight_date, f.start_time, f.end_time, fi_id 
+                  FROM flights AS f 
+                  JOIN lessons AS l ON f.flight_id = l.flight_id
+                  UNION 
+                  SELECT f.flight_id, f.flight_date,f.start_time,f.end_time, pilot_id AS fi_id
+                  FROM flights AS f 
+                  JOIN instructors AS i ON f.pilot_id = i.fi_id) AS r
+                  RIGHT JOIN instructors AS i ON r.fi_id = i.fi_id
+                  WHERE (r.flight_date = '$flight_date'));";
 
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
@@ -540,18 +551,18 @@ function book_flight(User $user) {
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
 
-  $valid_times_query = "SELECT (
-    NOT(((start_time < '".$_GET["start-time"]."')AND(end_time < '".$_GET["start-time"]."')) OR ((start_time > '".$_GET["end-time"]."')AND(end_time>'".$_GET["end-time"]."')))
+  $valid_times_query = "SELECT NOT((((start_time < '".$_GET["start-time"]."')AND(end_time < '".$_GET["start-time"]."')) OR ((start_time > '".$_GET["end-time"]."')AND(end_time>'".$_GET["end-time"]."')))
     ) AS vol_invalide
     FROM flights
     WHERE flight_date = '".$_GET["date"]."'
-    AND aircraft_reg = '".$_GET["registration"]."'";
+    AND aircraft_reg = '".$_GET["registration"]."';";
 
   // execute the query
   $res = pg_query($connection, $valid_times_query);
 
   $res_array = pg_fetch_array($res);
-  if (!$res_array || ($res_array[0] != "f")) {
+
+  if ($res_array && ($res_array[0] != "f")) {
     // close the connection
     pg_close($connection);
     return "Le créneau sélectionné est incorrect";
