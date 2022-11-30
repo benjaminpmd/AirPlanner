@@ -71,7 +71,7 @@ $operations = get_all_operations();
       <tr class="border-b-2 border-slate-400 dark:border-slate-500">
         <th class="p-2">Prénom</th>
         <th class="p-2">Nom</th>
-        <th class="p-2"></th>
+        <th class="p-2">Code</th>
       </tr>
     </thead>
     <tbody>
@@ -87,13 +87,7 @@ $operations = get_all_operations();
         echo "<tr class=\"border-b-2 border-slate-300 dark:border-slate-600 text-center\">
                         <th class=\"p-2\">" . $instructor["first_name"] . "</th>
                         <td class=\"p-2\">" . $instructor["last_name"] . "</td>
-                        <td class=\"p-2\">
-                            <a 
-                            class=\"p-2 rounded-full bg-sky-300 dark:bg-sky-700 duration-300 hover:bg-sky-400 dark:hover:bg-sky-600\"
-                            href=\"book.php?fi-code=" . $instructor["fi_code"] . "&is-lesson=on\">
-                                Rendez-vous
-                            </a>
-                        </td>
+                        <td class=\"p-2\">" . $instructor["fi_code"] . "</td>
                     </tr>\n";
       }
       ?>

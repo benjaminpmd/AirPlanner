@@ -9,10 +9,13 @@ $message_book = null;
 $flights = null;
 $fis = null;
 
+if ($_GET["date"] && $_GET["start-time"] && $_GET["end-time"]) {
+    $fis = get_available_fi($_GET["date"], $_GET["start-time"], $_GET["end-time"]);
+}
+
 if($_GET["type"] && ($_GET["type"] == "book-flight")) {
     if($_GET["date"]) {
         if ($_GET["is-lesson"]) {
-            $fis = get_available_fi($_GET["date"], $_GET["start-time"], $_GET["end-time"]);
             if ($_GET["fi-id"] && $_GET["objective"]) {
                 $message_book = book_flight($user);
             }

@@ -269,6 +269,11 @@ function save_flight_record(): string {
   // free the result of the query
   pg_free_result($result);
 
+  if ($result_array["flight_id"] < date("Y-m-d")) {
+    pg_close($connection);
+    return "Erreur, le vol ne peut être enregistré, la date est dépassée";
+  }
+
   // check that the user hasn't modified the original counter
   if ($result_array["aircraft_counter"] < $departure_counter) {
     pg_close($connection);
@@ -330,6 +335,8 @@ function save_flight_record(): string {
       balance=(SELECT balance FROM pilots WHERE pilot_id=" . $result_array["pilot_id"] . ")-$price
       WHERE pilot_id=" . $result_array["pilot_id"] . ";";
   pg_query($connection, $query);
+
+  pg_close($connection);
 
   return "Le vol a été enregistré. Total : $price euros";
 }
