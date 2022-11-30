@@ -568,7 +568,7 @@ function book_flight(User $user) {
     // free the result
     pg_free_result($result);
 
-    $query = "INSERT INTO lessons(flight_id, fi_id, objective) VALUES (".$result_array["flight_id"].", ".$_GET["fi-id"].", '".'test'."');";
+    $query = "INSERT INTO lessons(flight_id, fi_id, objective) VALUES (".$result_array["flight_id"].", ".$_GET["fi-id"].", '".$_GET["objective"]."');";
 
     // execute the query
     pg_query($connection, $query);

@@ -13,7 +13,7 @@ if($_GET["type"] && ($_GET["type"] == "book-flight")) {
     if($_GET["date"]) {
         if ($_GET["is-lesson"]) {
             $fis = get_available_fi($_GET["date"], $_GET["start-time"], $_GET["end-time"]);
-            if ($_GET["fi-id"]) {
+            if ($_GET["fi-id"] && $_GET["objective"]) {
                 $message_book = book_flight($user);
             }
         }
@@ -100,6 +100,8 @@ if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] ==
                 else echo "<option value=\"".$fi["fi_id"]."\">".$fi["fi_code"]."</option>";
             }
             echo "</select>\n";
+            echo "<label class=\"input-label\">Objectif</label>\n";
+            echo "<label class=\"input-value md:col-span-4\" name=\"objective\" required />\n";
         }
         
         ?>
