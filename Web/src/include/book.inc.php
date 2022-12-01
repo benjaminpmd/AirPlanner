@@ -43,7 +43,7 @@ if($_GET["type"] && $_GET["date"] && $_GET["registration"] && (($_GET["type"] ==
     <form action="/book.php" method="GET" class="text-center">
         <input type="hidden" name="type" value="check-flights">
         <label>Date</label>
-        <input type="date" required name="date" class="input-value" min="<?php echo date("Y-n-j") ?>" value="<?php echo $_GET["date"] ?>" />
+        <input type="date" required name="date" class="input-value" min="<?php echo date("Y-m-j") ?>" value="<?php echo $_GET["date"] ?>" />
         <label>Appareil</label>
         <select name="registration" class="input-value">
             <?php
