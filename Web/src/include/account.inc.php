@@ -4,6 +4,8 @@ include_once "./classes/User.class.php";
 
 $pilot_data = $user->get_pilot_data();
 
+$flights_nb = get_flights_count($user->get_user_id())[0]['count'];
+
 $message = null;
 
 if ($pilot_data["rib"] && $_POST["recharge-amount"]) {
@@ -56,6 +58,7 @@ if ($pilot_data["rib"] && $_POST["recharge-amount"]) {
         <li>Qualifié(e) IFR : <?php echo ($pilot_data["ifr_qualified"] == "t") ? "Oui" : "Non"; ?></li>
         <li>Qualifié(e) Pas variable : <?php echo ($pilot_data["vpp_qualified"] == "t") ? "Oui" : "Non"; ?></li>
         <li>Qualifié(e) Trains rentrants : <?php echo ($pilot_data["rg_qualified"] == "t") ? "Oui" : "Non"; ?></li>
+        <li>Nombres de vols : <?php echo $flights_nb ?></li>
       </ul>
     </article>
     <article class="flex flex-col text-left rounded-xl p-5 bg-gray-200 dark:bg-gray-700" id="balance">

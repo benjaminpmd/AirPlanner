@@ -648,3 +648,39 @@ function cancel_flight($flight_id): string {
 
    return "Vol annulé";
 }
+
+/**
+ * Function that return the number of flights donne for a pilot.
+ * 
+ * @param string $pilot_id the ID of the pilot.
+ * @return array number of flights for a pilot
+ */
+function get_flights_count(string $pilot_id): array {
+  // create the query
+  $query = "SELECT COUNT(*)
+  FROM flights
+  WHERE pilot_id = $pilot_id
+  GROUP BY pilot_id;";
+
+  // connect to the db
+  $connection = pg_connect(CONNECTION_STRING);
+
+  // execute and get the result of the query
+  $result = pg_query($connection, $query);
+
+  // get the array containing all the data
+  $result_array = pg_fetch_all($result);
+
+  // free the result
+  pg_free_result($result);
+
+  // close the connection
+  pg_close($connection);
+
+  // if the result array is null return an empty array
+  if (!$result_array) {
+    return [['count' => 0]];
+  }
+  // return the resulting array
+  return $result_array;
+}
