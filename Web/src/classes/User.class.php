@@ -21,6 +21,11 @@ class User
   private array $pilot_data = [];
   private array $mechanic_data = [];
 
+  /**
+   * Constructor of the class User, this class store all the informations about an user.
+   * 
+   * @param user_id the potential ID of the user.
+   */
   public function __construct(string $user_id = "null") {
     $this->user_id = $user_id;
     if ($user_id != "null") {
@@ -80,6 +85,9 @@ class User
     return $this->mechanic_data;
   }
 
+  /**
+   * Method that fetch the user in the database and set its attributes
+   */
   function fetch_user(): void {
     $query = "SELECT email, phone, first_name, last_name, ((SELECT student_id FROM students WHERE student_id=".$this->user_id.")=".$this->user_id.") AS is_student, ((SELECT fi_id FROM instructors WHERE fi_id=".$this->user_id.")=".$this->user_id.") AS is_fi FROM users WHERE (user_id=" . $this->user_id . ");";
     // connecting to the database
@@ -107,6 +115,9 @@ class User
     }
   }
 
+  /**
+   * Method that fetch the pilot data in the database.
+   */
   function fetch_pilot(): void {
     $query = "SELECT * FROM pilots WHERE pilot_id=" . $this->user_id . ";";
     // connecting to the database
@@ -130,6 +141,9 @@ class User
     else $this->is_pilot = false;
   }
 
+  /**
+   * Method that fetch a mechanic in the database.
+   */
   function fetch_mechanic(): void {
     $query = "SELECT * FROM mechanics WHERE mechanic_id=" . $this->user_id . ";";
     // connecting to the database
@@ -299,6 +313,7 @@ class User
   }
 }
 
+// instantiate a User object
 $user = null;
 if ($session->is_logged()) {
   $user = new User($_SESSION["user_id"]);

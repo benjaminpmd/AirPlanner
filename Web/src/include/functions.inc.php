@@ -3,7 +3,7 @@
 /**
  * Convert a float into a time.
  * 
- * @param float $x the float to convert.
+ * @param x the float to convert.
  * @return string the converted time. 
  */
 function float_to_time(float $x): string {
@@ -13,7 +13,7 @@ function float_to_time(float $x): string {
 /**
  * Convert a time into a float.
  * 
- * @param string $time the time to convert.
+ * @param time the time to convert.
  * @return float the converted float. 
  */
 function time_to_float(string $time): float {
@@ -143,7 +143,7 @@ function get_all_operations(): array {
 /**
  * Get the current flight for a pilot.
  * 
- * @param string $user_id the flight currently in progress for the user.
+ * @param user_id the flight currently in progress for the user.
  * @return array containing the flight details.
  */
 function get_current_flight(string $pilot_id): array {
@@ -176,8 +176,8 @@ function get_current_flight(string $pilot_id): array {
 /**
  * Get the flights of an aircraft for a specific date.
  * 
- * @param string $date selected to check for the flights.
- * @param string $registration the registration of the aircraft.
+ * @param date selected to check for the flights.
+ * @param registration the registration of the aircraft.
  * @return array containing flights details.
  */
 function get_flights_per_date(string $date, string $registration): array {
@@ -319,6 +319,7 @@ function save_flight_record(): string {
               (" . $result_array["flight_id"] . ", '" . $_GET["departure"] . "', " . $departure_counter . ", '" . $_GET["arrival"] . "', " . $arrival_counter . ", " . $_GET["movements"] . ", $flight_time);";
     }
   }
+  pg_query($connection, $query);
 
 
   // create the query to update the flight progress
@@ -343,6 +344,8 @@ function save_flight_record(): string {
 
 /**
  * Procedure that complete an operation.
+ * 
+ * @return string that inform the user
  */
 function complete_operation(): string {
   if (isset($_GET["type"]) && !empty($_GET["type"]) && $_GET["type"] == "complete-operation") {
@@ -378,6 +381,9 @@ function complete_operation(): string {
 
 /**
  * Procedure that create an operation.
+ * 
+ * @param user_id the ID of the mechanic.
+ * @return string indicating the status of the request to the user.
  */
 function create_operation(string $user_id): string {
   if (isset($_GET["type"]) && !empty($_GET["type"]) && $_GET["type"] == "new-operation") {
@@ -402,7 +408,8 @@ function create_operation(string $user_id): string {
 /**
  * Get aircrafts that can be book by a pilot given its qualifications.
  * 
- * @param string $user_id the ID of the pilot.
+ * @param user_id the ID of the pilot.
+ * @return the aircrafts a pilot can fly.
  */
 function get_allowed_aircrafts(string $user_id): array {
   $query = "SELECT registration,
@@ -441,7 +448,6 @@ function get_allowed_aircrafts(string $user_id): array {
           )
   );";
 
-
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
 
@@ -465,7 +471,15 @@ function get_allowed_aircrafts(string $user_id): array {
   return $result_array;
 }
 
-function get_available_fi(string $flight_date, string $start_time, string $end_time) {
+/**
+ * Function to get available instructors given a certain start and end time.
+ * 
+ * @param flight_date the date of the flight.
+ * @param start_time the beginning time of the flight.
+ * @param end_time the end time of the flight.
+ * @return array of instructors data.
+ */
+function get_available_fi(string $flight_date, string $start_time, string $end_time): array {
   $query = "SELECT DISTINCT i.fi_id, i.fi_code
   FROM (SELECT f.flight_id,f.flight_date, f.start_time, f.end_time, fi_id 
       FROM flights AS f 
@@ -513,37 +527,53 @@ function get_available_fi(string $flight_date, string $start_time, string $end_t
   return $result_array;
 }
 
-function book_flight(User $user) {
+/**
+ * Function to book a flight.
+ * 
+ * @param user the user object that will be used to check all informations if the flight can be booked.
+ * @return string a message to display to the pilot.
+ */
+function book_flight(User $user): string {
+  // get the data of a pilot
   $pilot_data = $user->get_pilot_data();
 
-
+  // get the allowed aircrafts that can be book
   $allowed_aircrafts = get_allowed_aircrafts($user->get_user_id());
 
+  // check if the balance of the pilot is not less than 0
   if (intval($pilot_data["balance"]) < 0) {
     return "Erreur, votre solde est inférieur à 0";
   };
+
+  // check if the contribution is up to date
   if ($pilot_data["contribution_date"] < date('Y-m-d', strtotime('-1 year'))) {
     return "Erreur, votre contribution club n'est pas à jours";
   }
 
+  // wether the flight is a lesson or not
   $is_lesson = ($_GET["is-lesson"] == 'on');
   
+  // if it is not a lesson and the user is a student, block the flight booking
   if (!$is_lesson && $user->is_student()) {
     return "Erreur, vous devez effectuer une réservation avec instructeur";
   }
 
+  // set that the pilot is allowed to book to false
   $is_allowed = false;
 
+  // for each allowed aircraft check if the registration of the plane match an allowed one
   foreach ($allowed_aircrafts as $key => $aircraft) {
     if ($aircraft["registration"] == $_GET["registration"]) {
       $is_allowed = true;
     }
   }
 
+  // if the pilot is not allowed and it is not a lesson, then block the booking
   if (!$is_allowed && !$is_lesson) {
     return "Erreur, vous n'avez pas les qualifications requises pour réserver cet appareil";
   }
 
+  // check the start and end times
   if ($_GET["start-time"] >= $_GET["end-time"]) {
     return "Erreur, l'heure de début ne peut pas être après l'heure de fin";
   }
@@ -551,28 +581,32 @@ function book_flight(User $user) {
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
 
-  $valid_times_query = "SELECT NOT((((start_time < '".$_GET["start-time"]."')AND(end_time < '".$_GET["start-time"]."')) OR ((start_time > '".$_GET["end-time"]."')AND(end_time>'".$_GET["end-time"]."')))
+  // query that check if the start and end times are not in conflict
+  $valid_times_query = "SELECT DISTINCT  NOT((((start_time <= '".$_GET["start-time"]."'::time)AND(end_time <= '".$_GET["start-time"]."'::time)) OR ((start_time >= '".$_GET["end-time"]."'::time)AND(end_time >= '".$_GET["end-time"]."'::time)))
     ) AS vol_invalide
     FROM flights
     WHERE flight_date = '".$_GET["date"]."'
-    AND aircraft_reg = '".$_GET["registration"]."';";
+    AND aircraft_reg = '".$_GET["registration"]."' ORDER BY vol_invalide DESC LIMIT 1;";
 
   // execute the query
   $res = pg_query($connection, $valid_times_query);
 
   $res_array = pg_fetch_array($res);
 
+  // check if there is a flight in conflict
   if ($res_array && ($res_array[0] != "f")) {
     // close the connection
     pg_close($connection);
     return "Le créneau sélectionné est incorrect";
   }
 
+  // if no, then create the request to insert the flight
   $query = "INSERT INTO flights(aircraft_reg, pilot_id, flight_date, start_time, end_time) VALUES ('".$_GET["registration"]."', ".$user->get_user_id().", '".$_GET["date"]."', '".$_GET["start-time"]."', '".$_GET["end-time"]."');";
 
   // execute the query
   pg_query($connection, $query);
 
+  // if it is a lesson, insert it to the database
   if ($is_lesson) {
     
     $query = "SELECT flight_id FROM flights WHERE flight_date='".$_GET["date"]."' AND start_time='".$_GET["start-time"]."' AND end_time='".$_GET["end-time"]."';";
@@ -590,7 +624,6 @@ function book_flight(User $user) {
 
     // execute the query
     pg_query($connection, $query);
-
   }
 
   // close the connection
@@ -599,8 +632,17 @@ function book_flight(User $user) {
   return "Votre réservation a bien été prise en compte";
 }
 
+/**
+ * Function that update the balance of a pilot.
+ * 
+ * @param string $user_id the ID of the user
+ * @param int $amount the amount to reload on the account
+ * @return array containing three values, the first one "success" indicate the success of the operation, 
+ * the second one 'message' the possible information to display to the user,
+ * the third one 'amount' the amount reloaded on the account
+ */
 function update_balance(string $user_id, int $amount): array {
-
+  // checking if the amount is correct
   if (intval($amount) < 1) {
     return [
       "success" => false,
@@ -615,7 +657,7 @@ function update_balance(string $user_id, int $amount): array {
   $connection = pg_connect(CONNECTION_STRING);
 
   // execute and get the result of the query
-  $result = pg_query($connection, $query);
+  pg_query($connection, $query);
 
   // close the connection
   pg_close($connection);
@@ -628,7 +670,13 @@ function update_balance(string $user_id, int $amount): array {
   ];
 }
 
-function cancel_flight($flight_id): string {
+/**
+ * Function that cancel a flight.
+ * 
+ * @param string $flight_id the ID of the flight to cancel.
+ * @return string 
+ */
+function cancel_flight(string $flight_id): string {
   // connect to the db
   $connection = pg_connect(CONNECTION_STRING);
 

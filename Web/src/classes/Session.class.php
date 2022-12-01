@@ -2,6 +2,12 @@
 include_once "./include/utils.inc.php";
 include_once "./include/mail.inc.php";
 
+/**
+ * Class managing the session of a user.
+ * 
+ * @version 1.0.0
+ * @author Benjamin PAUMARD
+ */
 class Session {
   public function __construct() {}
   

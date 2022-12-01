@@ -26,11 +26,6 @@ INSERT INTO users VALUES (23, '078475956 ', 'h.savary@yahoo.fr', 'Savary', 'Hila
 INSERT INTO users VALUES (24, '0666225578', 'm.compt@yahoo.fr', 'Michel', 'Compt', '$2y$10$AAIw6fM/dIOk0KJujGIRZOckbWe.Pyqb5zsQQcPyyleUBjHmTLTYm');
 INSERT INTO users VALUES (28, '0666666666', 'c.mareshall@mail.fr', 'Mareshall', 'Cédric', '$2y$10$jv7wfDF3Isuf9QDWUKShhemwiB3zanz6vrw3Q9b3GUc4h5QiNcuLG');
 INSERT INTO users VALUES (29, '0777777777', 'dimafoippeprou-8771@yopmail.com', 'Mareshall', 'Cédric', '$2y$10$SExoEoCWIV/Ckit7brpQK.Qg330./bcS4qKmwKv3.Ms3mUzcC8lCG');
-INSERT INTO users VALUES (27, '0102030405', 'contact.benjaminpaumard@gmail.com', 'PAUMARD', 'Benjamin', '$2y$10$OH/UyuMfQRNqHzLY1AuleOlp0EwrexfgLacDYYmqbpNV/IlVK62ka');
-INSERT INTO users VALUES (31, '0651545758', 'eva.fleutry@gmail.com', 'DelaNoche', 'Pedrovitch', '$2y$10$sG1.nuJLR55tbHGJRKSGS.bYy7ioG2pMe2NLQdtZb80UHkjQraa4a');
-INSERT INTO users VALUES (37, '0999999999', 'av.volquardsen@gmail.com', 'ARAB', 'Michel', '$2y$10$BywM1WVW9NXEL4/gZJSkpO91NyjA68SRT4HlEi3cDM5Fwb6HsXgyq');
-INSERT INTO users VALUES (38, '0123456789', 'av.volquara@gmail.com', 'PADEDIPLOM', 'Jay', '$2y$10$wwDMjfkb9y0hwCpKl0gpjO36s/vcT0Lwmcpdiu/UspfT0nBR5bryC');
-
 
 --
 -- Data for Name: pilots; Type: TABLE DATA; Schema: public; Owner: airplanner_access
@@ -93,7 +88,6 @@ INSERT INTO instructors VALUES (31, 'ABC');
 
 INSERT INTO lessons VALUES (2, 13, 'entrainement atterrissage');
 INSERT INTO lessons VALUES (5, 22, 'interruption volontaire du vol');
-INSERT INTO lessons VALUES (18, 31, 'test');
 
 
 --

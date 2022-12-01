@@ -6,10 +6,9 @@ __pycache__
 .vscode
 vendor
 venv
+docs/.$*
 
 # FILES
 .env
 debug.log
-docs/.$schema_ea.drawio.bkp
 temp.*
-docs/.$*

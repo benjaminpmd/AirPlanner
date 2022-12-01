@@ -1,3 +1,4 @@
+// storage of the theme
 if (localStorage.theme === "dark" || !("theme" in localStorage)) {
   document.documentElement.classList.add("dark");
 } else {
@@ -13,6 +14,7 @@ function attachEvent(selector, event, fn) {
     });
   }
 }
+// bind the theme selection to the button
 window.onload = function () {
   attachEvent("[data-aw-toggle-menu]", "click", function (elem) {
     elem.classList.toggle("expanded");
@@ -26,6 +28,8 @@ window.onload = function () {
       : "light";
   });
 };
+
+// event for the menu opening
 window.onpageshow = function () {
   const elem = document.querySelector("[data-aw-toggle-menu]");
   if (elem) {

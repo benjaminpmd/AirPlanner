@@ -131,4 +131,4 @@ if (!isset($page_canonical) || empty($page_canonical)) {
     </div>
     <h1 class="p-10 pb-20 text-5xl text-center font-bold"><?php echo $page_title; ?></h1>
   </header>
-  <main class="min-h-screen bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out">
+  <main class="min-h-screen bg-gray-50/60 dark:bg-gray-500/60 duration-300 ease-in-out pb-10">

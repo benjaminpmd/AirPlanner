@@ -167,34 +167,3 @@ CREATE table operations(
     CONSTRAINT operations_pk PRIMARY KEY (mechanic_id, aircraft_reg)
     
 );
-
-
-
-SELECT t.flight_id, t.end_time, t.parking,u.last_name, u.first_name
-FROM(
-    SELECT f.flight_id, f.start_time, f.end_time, a.parking, u.first_name, u.last_name, u.user_id,a.registration,f.flight_date
-        FROM pilots AS p 
-        JOIN flights AS f ON p.pilot_id = f.pilot_id 
-        JOIN aircrafts AS a ON f.aircraft_reg = a.registration 
-        JOIN users AS u ON p.pilot_id = u.user_id 
-    UNION 
-    SELECT f.flight_id, f.start_time, f.end_time, a.parking, u.first_name, u.last_name, u.user_id,a.registration,f.flight_date
-        FROM pilots AS p 
-        JOIN flights AS f ON p.pilot_id = f.pilot_id 
-        JOIN aircrafts AS a ON f.aircraft_reg = a.registration 
-        JOIN lessons AS l ON f.flight_id = l.flight_id 
-        JOIN users AS u ON l.fi_id = u.user_id) AS t
-        LEFT JOIN lessons AS l ON t.flight_id = l.flight_id
-        LEFT JOIN users AS u ON l.fi_id = u.user_id
-    WHERE (t.user_id = 'INSERT pilot_id')
-    AND (t.registration= 'INSERT registration') 
-    AND (t.flight_date = CURRENT_DATE) 
-    AND (t.start_time <= CURRENT_TIME + interval '1h')
-    AND (t.end_time > CURRENT_TIME + interval '1h')
-    AND
-    NOT EXISTS
-    (SELECT  o.aircraft_reg 
-    FROM operations AS o 
-    WHERE o.aircraft_reg = 'INSERT registration' 
-    AND (o.op_date IS NULL OR o.op_date > CURRENT_DATE)
-);

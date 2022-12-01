@@ -9,12 +9,14 @@ $message_book = null;
 $flights = null;
 $fis = null;
 
+// logic of the page
+// act depending on the informations available
 if ($_GET["date"] && $_GET["start-time"] && $_GET["end-time"]) {
     $fis = get_available_fi($_GET["date"], $_GET["start-time"], $_GET["end-time"]);
 }
 
 if($_GET["type"] && ($_GET["type"] == "book-flight")) {
-    if($_GET["date"]) {
+    if($_GET["date"] && $_GET["date"] >= date("Y-m-d")) {
         if ($_GET["is-lesson"]) {
             if ($_GET["fi-id"] && $_GET["objective"]) {
                 $message_book = book_flight($user);
@@ -23,6 +25,9 @@ if($_GET["type"] && ($_GET["type"] == "book-flight")) {
         else {
             $message_book = book_flight($user);
         }
+    }
+    else if ($_GET["date"] < date("Y-m-d")) {
+        $message_flights = "Date incorrecte";
     }
     else {
         $message_flights = "Veuillez spécifier une date";
