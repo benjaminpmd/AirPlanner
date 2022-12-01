@@ -57,7 +57,7 @@ $operations = get_all_operations();
         else {
           echo " bg-sky-300 dark:bg-sky-700 hover:bg-sky-400 dark:hover:bg-sky-600\"";
         }
-        echo " disallow href=\"book.php?registration=" . $aircraft["registration"] . "?date=".date("Y-m-d")."\">Réserver</a></td></tr>\n";
+        echo " disallow href=\"book.php?type=check-flights&registration=" . $aircraft["registration"] . "&date=".date("Y-m-d")."\">Réserver</a></td></tr>\n";
       }
       ?>
     </tbody>
