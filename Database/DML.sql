@@ -118,6 +118,7 @@ SELECT email, phone, first_name, last_name, (
     FROM users 
     WHERE (user_id='INSERT user_id');
 
+
 -- request to get all the informations about a pilot
 SELECT * FROM pilots WHERE pilot_id="INSERT pilot_id";
 
@@ -125,5 +126,89 @@ SELECT * FROM pilots WHERE pilot_id="INSERT pilot_id";
 SELECT * FROM mechanics WHERE mechanic_id="INSERT user_id";
 
 -- select the primordial informations about a user given an email address
-SELECT email, first_name, last_name FROM users WHERE (email='INSERR email');
+SELECT email, first_name, last_name FROM users WHERE (email='INSERT email');
+
+--request to get all the informations about all the aircrafts--
+SELECT * FROM aircrafts;
+
+--request to get all the informations about an instructor--
+SELECT * FROM instructors JOIN users ON (user_id = 'INSERT fi_id');
+
+--request to get all the informations about the operations of a mechanic that haven't been done yet--
+SELECT * FROM operations WHERE mechanic_id = 'INSERT mechanic_id' AND (op_date IS NULL OR op_date > CURRENT_DATE);
+
+--request to get only the aircraft registration for each operation--
+SELECT aircraft_reg FROM operations;
+
+--request to get all the informations about the on going flight of a user and his aircraft--
+SELECT * FROM flights AS f JOIN aircrafts AS a ON a.registration = f.aircraft_reg WHERE (f.pilot_id = 'INSERT pilot_id') AND (f.in_progress=true);
+
+--request to get all the informations about the flights scheduled on a day for an aircraft with a given registration, ordered by their start time--
+SELECT * FROM flights WHERE flight_date='INSERT date' AND aircraft_reg='INSERT registration' ORDER BY start_time;
+
+--request to get all the informations about the on going flights of the aircraft given by its registration, and the aircraft itself--
+SELECT * FROM flights AS f JOIN aircrafts AS a ON a.registration = f.aircraft_reg WHERE f.aircraft_reg = 'INSERT registration' AND f.in_progress=true;
+
+--request to get the registration of the aircrafts a pilot can book--
+SELECT registration,
+CASE
+    WHEN ((SELECT p.vpp_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= TRUE) THEN TRUE
+    WHEN ((SELECT p.vpp_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= FALSE) THEN FALSE
+END AS vpp_qualification,
+CASE
+    WHEN ((SELECT p.rg_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= TRUE) THEN TRUE
+    WHEN ((SELECT p.rg_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= FALSE) THEN FALSE
+END AS rg_qualification
+
+FROM aircrafts AS a
+WHERE (
+        ( 
+            (((SELECT p.rg_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id') = TRUE)AND(a.has_rg = TRUE OR a.has_rg = FALSE))
+        OR
+            (((SELECT p.rg_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= FALSE)AND(a.has_rg = FALSE)))
+AND
+        (
+            (((SELECT p.vpp_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= TRUE)AND(a.has_vpp = TRUE OR a.has_vpp = FALSE))
+        OR
+            (((SELECT p.vpp_qualified FROM pilots AS p WHERE p.pilot_id = 'INSERT pilot_id')= FALSE)AND(a.has_vpp = FALSE))
+        )
+);
+
+--request to get the instructors available given a date and a certain start time and end time--
+
+SELECT DISTINCT i.fi_id, i.fi_code
+  FROM (SELECT f.flight_id,f.flight_date, f.start_time, f.end_time, fi_id 
+      FROM flights AS f 
+      JOIN lessons AS l ON f.flight_id = l.flight_id
+      UNION 
+      SELECT f.flight_id, f.flight_date,f.start_time,f.end_time, pilot_id AS fi_id
+      FROM flights AS f 
+      JOIN instructors AS i ON f.pilot_id = i.fi_id) AS r
+  RIGHT JOIN instructors AS i ON r.fi_id = i.fi_id
+  WHERE (r.flight_date = 'INSERT flight_date')
+  AND((r.start_time < 'INSERT start_time')AND(r.end_time < 'INSERT start_time')) 
+  OR ((r.start_time > 'INSERT end_time')AND(r.end_time>'INSERT end_time'))
+  OR ((r.start_time IS NULL)AND(r.end_time IS NULL))
+  OR NOT EXISTS(SELECT * 
+                  FROM (SELECT f.flight_id,f.flight_date, f.start_time, f.end_time, fi_id 
+                  FROM flights AS f 
+                  JOIN lessons AS l ON f.flight_id = l.flight_id
+                  UNION 
+                  SELECT f.flight_id, f.flight_date,f.start_time,f.end_time, pilot_id AS fi_id
+                  FROM flights AS f 
+                  JOIN instructors AS i ON f.pilot_id = i.fi_id) AS r
+                  RIGHT JOIN instructors AS i ON r.fi_id = i.fi_id
+                  WHERE (r.flight_date = 'INSERT flight_date'));
+
+--request to get the flight_id of a flight scheduled a given date, start time and end time--
+SELECT flight_id FROM flights 
+WHERE flight_date='INSERT flight_date' 
+AND start_time='INSERT start_time' 
+AND end_time='INSERT end_time';
+
+--request to get the count of every flights a pilot did since he registered--
+SELECT COUNT(*)
+  FROM flights
+  WHERE pilot_id = 'INSERT pilot_id'
+  GROUP BY pilot_id;
 

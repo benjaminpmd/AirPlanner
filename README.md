@@ -62,7 +62,7 @@ L'execution du client réseau pse fera de différentes façons selon l'OS utilis
 
 ## Site Web
 
-Le site web disponible à [cette adresse](https://airplanner.benjaminpmd.fr/) est réalisé en `HTML 5`, `CSS 3`, `PHP7.4`. Il a pour but de gérer les réservations des vols, ainsi que la disponibilité des appareils, notamment au travers d'une page réservée aux mécaniciens du club.
+Le site web disponible à [cette adresse](https://airplanner.benjaminpmd.fr/) est réalisé en `HTML 5`, `CSS 3`, `PHP7.4` et `JS`. Il a pour but de gérer les réservations des vols, ainsi que la disponibilité des appareils, notamment au travers d'une page réservée aux mécaniciens du club.
 
 ### Installation
 
