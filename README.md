@@ -40,7 +40,7 @@ Si vous avez utilisé la commande `./setup.sh` pour mettre en place le serveur, 
 
 ### Client
 
-Le client réseau communique avec le serveur, pour se faire, il est nécessaire d'indiquer l'adresse IP et le du serveur au lancement du client
+Le client réseau communique avec le serveur, pour se faire, il est nécessaire d'indiquer l'adresse IP et le du serveur au lancement du client. 
 
 #### Installation
 
