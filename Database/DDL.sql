@@ -14,7 +14,7 @@
 -- DELETE FROM students CASCADE;
 -- DELETE FROM instructors CASCADE;
 -- DELETE FROM aircrafts CASCADE;
--- DELETE FROM flight_schedules CASCADE;
+-- DELETE FROM flights CASCADE;
 -- DELETE FROM flight_records CASCADE;
 -- DELETE FROM lessons CASCADE;
 -- DELETE FROM mechanics CASCADE;
@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS pilots CASCADE;
 DROP TABLE IF EXISTS students CASCADE;
 DROP TABLE IF EXISTS instructors CASCADE;
-DROP TABLE IF EXISTS aircrafts CASCADE;
-DROP TABLE IF EXISTS flight_schedules CASCADE;
+DROP TABLE IF EXISTS aicrafts CASCADE;
+DROP TABLE IF EXISTS flights CASCADE;
 DROP TABLE IF EXISTS flight_records CASCADE;
 DROP TABLE IF EXISTS lessons CASCADE;
 DROP TABLE IF EXISTS mechanics CASCADE;
@@ -34,7 +34,7 @@ DROP TABLE IF EXISTS operations CASCADE;
 
 -- Create a new table called 'users'
 CREATE TABLE users(
-    user_id SERIAL,
+    user_id SERIAL NOT NULL,
     phone CHAR(10) NOT NULL,
     email VARCHAR(100) NOT NULL,
     last_name VARCHAR(30) NOT NULL,
@@ -96,23 +96,24 @@ CREATE table aircrafts(
     has_vpp BOOLEAN DEFAULT(FALSE),
     has_rg BOOLEAN DEFAULT(FALSE),
     price FLOAT NOT NULL,
+    parking INT NOT NULL,
     CONSTRAINT registration_pk PRIMARY KEY(registration),
     CONSTRAINT valid_aircraft_type CHECK (LENGTH(aircraft_type) > 2),
     CONSTRAINT valid_max_pax CHECK (max_pax in(1,2,3)),
-    CONSTRAINT valid_range CHECK ((range >= 400)AND(range <= 1700)),
-    CONSTRAINT valid_price CHECK ((price >= 50)AND(price <= 350))
+    CONSTRAINT valid_range CHECK ((aircraft_range >= 400)AND(aircraft_range <= 1700)),
+    CONSTRAINT valid_price CHECK ((price >= 50)AND(price <= 350)),
+    CONSTRAINT uniq_park UNIQUE(parking);
 );
 
 
--- Create a new table called 'flight_schedules'
-CREATE table flight_schedules(
-    flight_id INT NOT NULL,
+-- Create a new table called 'flights'
+CREATE table flights(
+    flight_id SERIAL NOT NULL,
     pilot_id SERIAL REFERENCES users(user_id) NOT NULL,
     aircraft_reg CHAR(6) NOT NULL,
     flight_date date NOT NULL,
     start_time time NOT NULL,
     end_time time NOT NULL,
-    flight_description VARCHAR(100),
     CONSTRAINT flight_pk PRIMARY KEY(flight_id),
     CONSTRAINT pilot_id_fk FOREIGN KEY (pilot_id) REFERENCES pilots(pilot_id),
     CONSTRAINT registration_fk FOREIGN KEY (aircraft_reg) REFERENCES aircrafts(registration),
@@ -121,32 +122,30 @@ CREATE table flight_schedules(
 
 -- Create a new table called 'flight_records'
 CREATE table flight_records(
-    flight_id INT NOT NULL,
+    flight_id SERIAL NOT NULL,
     departure CHAR(4) NOT NULL,
     departure_counter FLOAT NOT NULL,
     arrival CHAR(4) NOT NULL,
     arrival_counter FLOAT NOT NULL,
     movements INT NOT NULL,
     flight_time FLOAT NOT NULL,
-    added_fuel INT,
-    flight_description VARCHAR(100),
-    CONSTRAINT flight_fk FOREIGN KEY (flight_id) REFERENCES flights(flight_id),
+    added_fuel INT NOT NULL,
+    flight_description VARCHAR(200),
     CONSTRAINT valid_counter CHECK (departure_counter < arrival_counter),
     CONSTRAINT valid_movements CHECK (movements >= 2),
-    CONSTRAINT flight_rec_pk PRIMARY KEY(flight_id)
+    CONSTRAINT flight_rec_pk PRIMARY KEY (flight_id),
+    CONSTRAINT flight_fk FOREIGN KEY (flight_id) REFERENCES flights(flight_id)
 );
 
 
 -- Create a new table called 'lessons'
 CREATE table lessons(
-    flight_id INT NOT NULL,
-    fi_id INT NOT NULL,
-    student_id INT NOT NULL,
+    flight_id SERIAL NOT NULL,
+    fi_id SERIAL NOT NULL,
     objective VARCHAR(200) NOT NULL,
-    CONSTRAINT flight_id_fk FOREIGN KEY (flight_id) REFERENCES flight_schedules(flight_id),
+    CONSTRAINT flight_id_fk FOREIGN KEY (flight_id) REFERENCES flights(flight_id),
     CONSTRAINT fi_id_fk FOREIGN KEY (fi_id) REFERENCES instructors(fi_id),
-    CONSTRAINT student_id_pk FOREIGN KEY (student_id) REFERENCES students(student_id),
-    CONSTRAINT lessons_pk PRIMARY KEY (flight_id, fi_id, student_id)
+    CONSTRAINT lessons_pk PRIMARY KEY (flight_id, fi_id)
 );
 
 -- Create a new table called 'mechanics'
@@ -158,12 +157,14 @@ CREATE table mechanics(
 
 -- Create a new table called 'operations'
 CREATE table operations(
-    mechanic_id INT NOT NULL,
+    op_id SERIAL NOT NULL,
+    mechanic_id SERIAL NOT NULL,
     aircraft_reg CHAR(6) NOT NULL,
     op_date date,
-    flight_description VARCHAR(100),
+    op_description VARCHAR(100),
     CONSTRAINT mechanic_id_fk FOREIGN KEY (mechanic_id) REFERENCES mechanics(mechanic_id),
     CONSTRAINT aircraft_reg_fk FOREIGN KEY (aircraft_reg) REFERENCES aircrafts(registration),
-    CONSTRAINT operations_pk PRIMARY KEY (mechanic_id, aircraft_reg)
+    CONSTRAINT operations_pk PRIMARY KEY (op_id)
     
 );
+
