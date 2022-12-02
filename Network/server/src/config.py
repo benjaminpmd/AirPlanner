@@ -11,7 +11,7 @@ import logging
 LOGGING_FILE: str = "debug.log"
 
 # level of the logging saved in the file
-LOGGING_LEVEL: int = logging.DEBUG
+LOGGING_LEVEL: int = logging.INFO
 
 # defining values for the server configuration
 ADDRESS: str = ''

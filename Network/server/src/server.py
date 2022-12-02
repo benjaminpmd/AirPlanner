@@ -345,11 +345,9 @@ class Server:
         try:
             # bind the server to its address and its port
             self.server.bind((self.address, self.port))
-        except PermissionError:
-            logging.error(f"could not bind the server to port: {self.port}")
-            return
-        except Exception as e:
-            logging.error(f"error occurred while binding the server: {e}")
+
+        except:
+            logging.critical(f"Could not bind the server on port {self.port}")
             return
             
         # listen up to 30 clients
