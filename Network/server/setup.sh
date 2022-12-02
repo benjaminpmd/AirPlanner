@@ -19,7 +19,7 @@ setup() {
 
     echo ""
     echo "Installing librairies..."
-    pip install -r requierements.txt
+    pip install -r requirements.txt
 
     echo ""
     echo "===================================================================="
