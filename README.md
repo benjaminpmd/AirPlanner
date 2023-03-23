@@ -1,6 +1,6 @@
 # AirPlanner
 
-AirPlanner est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils. Ce projet est réalisé dans le cadre de deux Unités d'enseignement (Base de données et Réseaux), de la licence informatique à CY Cergy Paris Université. Ce projet s'articule autours de un site web et une partie réseau.
+AirPlanner est un outil destiné à la gestion d'aéroclubs, plus particulièrement dans la gestion de la réservations des appareils. Ce projet est réalisé dans le cadre de deux Unités d'enseignement (Base de données et Réseaux), de la licence informatique à CY Cergy Paris Université. Ce projet s'articule autours d'un site web et une partie réseau.
 
 ---
 
